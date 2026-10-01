@@ -22,8 +22,8 @@ branch revision, actual CLI invocation, version, and failed discovery for each.
 
 ## Local preparation
 
-The final local rehearsal ran from clean commit `244f227`, using migrated skill content from
-`8a2fe861b7cba354684eb3e3095f1ad83961af24` and an inspected real CLI executable.
+The final local rehearsal ran from clean commit `6dcbfc8`, using migrated skill content from
+`8a2fe861b7cba354684eb3e3095f1ad83961af24` and the default `npx --yes skills@1.7.0` invocation, with no installer override.
 The evidence records the checkout HEAD and whether the worktree was dirty at
 check time; the resource hashes identify the exact tested bytes independently.
 
@@ -50,6 +50,13 @@ proof or a published-default-branch pass.** Real Mermaid rendering requires a
 configured viewer bundle and jsdom; only syntax was checked here. Authenticated
 GitHub operations and the external work-tracker ledger were not exercised.
 Those runtime prerequisites are documented in the README and bundled skills.
+
+The final recorded checks use the documented default npx path for **both** local
+and published modes. Independent review found that the initial cached-CLI check
+had bypassed an npm configuration error: npm rejects using `/dev/null` as both
+its user and global configuration file. The checker now creates distinct empty
+configuration files inside each disposable directory; the default npx path
+passes the local check and reaches the expected published discovery failure.
 
 ## Reproduce
 

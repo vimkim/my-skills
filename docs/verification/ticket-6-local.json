@@ -1,5 +1,5 @@
 {
-  "checked_at_utc": "2026-10-01T07:15:47.775621+00:00",
+  "checked_at_utc": "2026-10-01T07:17:04.755555+00:00",
   "mode": "local rehearsal",
   "published_default_branch_verified": false,
   "cases": [
@@ -8,8 +8,9 @@
       "commands": [
         {
           "argv": [
-            "node",
-            "/home/vimkim/.npm/_npx/ac0ed6aa23b37c1e/node_modules/skills/bin/cli.mjs",
+            "npx",
+            "--yes",
+            "skills@1.7.0",
             "--version"
           ],
           "exit": 0,
@@ -32,12 +33,13 @@
             "HEAD"
           ],
           "exit": 0,
-          "output": "244f22763550e67e12f1f9ad3567682fd02c63d7\n"
+          "output": "6dcbfc847cc6069ac28ff35e8687c594594c7b9c\n"
         },
         {
           "argv": [
-            "node",
-            "/home/vimkim/.npm/_npx/ac0ed6aa23b37c1e/node_modules/skills/bin/cli.mjs",
+            "npx",
+            "--yes",
+            "skills@1.7.0",
             "add",
             "/home/vimkim/gh/my-skills-ticket6",
             "--list"
@@ -47,8 +49,9 @@
         },
         {
           "argv": [
-            "node",
-            "/home/vimkim/.npm/_npx/ac0ed6aa23b37c1e/node_modules/skills/bin/cli.mjs",
+            "npx",
+            "--yes",
+            "skills@1.7.0",
             "add",
             "/home/vimkim/gh/my-skills-ticket6",
             "--global",
@@ -67,7 +70,7 @@
             "git",
             "init",
             "-q",
-            "/home/vimkim/tmp/published-skills-check-cvb2md01/checkout"
+            "/home/vimkim/tmp/published-skills-check-d38v970q/checkout"
           ],
           "exit": 0,
           "output": ""
@@ -79,17 +82,17 @@
             "unittest",
             "discover",
             "-s",
-            "/home/vimkim/tmp/published-skills-check-cvb2md01/home/.agents/skills/markdown-write/tests",
+            "/home/vimkim/tmp/published-skills-check-d38v970q/home/.agents/skills/markdown-write/tests",
             "-v"
           ],
           "exit": 0,
-          "output": "test_accepts_supported_rendering_contract (test_check_copyparty_markdown.CheckerTests.test_accepts_supported_rendering_contract) ... ok\ntest_ignores_examples_inside_code (test_check_copyparty_markdown.CheckerTests.test_ignores_examples_inside_code) ... ok\ntest_rejects_broken_delimiters_mermaid_links_and_inline_svg (test_check_copyparty_markdown.CheckerTests.test_rejects_broken_delimiters_mermaid_links_and_inline_svg) ... ok\ntest_rejects_unsafe_external_svg (test_check_copyparty_markdown.CheckerTests.test_rejects_unsafe_external_svg) ... ok\n\n----------------------------------------------------------------------\nRan 4 tests in 0.005s\n\nOK\n"
+          "output": "test_accepts_supported_rendering_contract (test_check_copyparty_markdown.CheckerTests.test_accepts_supported_rendering_contract) ... ok\ntest_ignores_examples_inside_code (test_check_copyparty_markdown.CheckerTests.test_ignores_examples_inside_code) ... ok\ntest_rejects_broken_delimiters_mermaid_links_and_inline_svg (test_check_copyparty_markdown.CheckerTests.test_rejects_broken_delimiters_mermaid_links_and_inline_svg) ... ok\ntest_rejects_unsafe_external_svg (test_check_copyparty_markdown.CheckerTests.test_rejects_unsafe_external_svg) ... ok\n\n----------------------------------------------------------------------\nRan 4 tests in 0.004s\n\nOK\n"
         },
         {
           "argv": [
             "node",
             "--check",
-            "/home/vimkim/tmp/published-skills-check-cvb2md01/home/.agents/skills/markdown-write/scripts/check_mermaid_blocks.mjs"
+            "/home/vimkim/tmp/published-skills-check-d38v970q/home/.agents/skills/markdown-write/scripts/check_mermaid_blocks.mjs"
           ],
           "exit": 0,
           "output": ""
@@ -99,7 +102,7 @@
             "git",
             "init",
             "-q",
-            "/home/vimkim/tmp/published-skills-check-cvb2md01/peer"
+            "/home/vimkim/tmp/published-skills-check-d38v970q/peer"
           ],
           "exit": 0,
           "output": ""
@@ -108,31 +111,31 @@
           "argv": [
             "just",
             "--justfile",
-            "/home/vimkim/tmp/published-skills-check-cvb2md01/checkout/justfile",
+            "/home/vimkim/tmp/published-skills-check-d38v970q/checkout/justfile",
             "sync-dry-run",
             "--config",
-            "/home/vimkim/tmp/published-skills-check-cvb2md01/consumer-sync.json"
+            "/home/vimkim/tmp/published-skills-check-d38v970q/consumer-sync.json"
           ],
           "exit": 2,
-          "output": "conflict: gh-pr-comments-all (untracked/manual installation or unverifiable older content)\nconflict: markdown-write (untracked/manual installation or unverifiable older content)\nconflict: question-socratically (untracked/manual installation or unverifiable older content)\nconflict: resolve-greptile-comments (untracked/manual installation or unverifiable older content)\nconflict: track-work (untracked/manual installation or unverifiable older content)\n'/home/vimkim/.local/share/mise/installs/python/latest/bin/python3' \"/home/vimkim/tmp/published-skills-check-cvb2md01/checkout/scripts/sync_skills.py\" --collection \"/home/vimkim/tmp/published-skills-check-cvb2md01/checkout\" --dry-run --config /home/vimkim/tmp/published-skills-check-cvb2md01/consumer-sync.json\nerror: recipe `sync-dry-run` failed on line 8 with exit code 2\n"
+          "output": "conflict: gh-pr-comments-all (untracked/manual installation or unverifiable older content)\nconflict: markdown-write (untracked/manual installation or unverifiable older content)\nconflict: question-socratically (untracked/manual installation or unverifiable older content)\nconflict: resolve-greptile-comments (untracked/manual installation or unverifiable older content)\nconflict: track-work (untracked/manual installation or unverifiable older content)\n'/home/vimkim/.local/share/mise/installs/python/latest/bin/python3' \"/home/vimkim/tmp/published-skills-check-d38v970q/checkout/scripts/sync_skills.py\" --collection \"/home/vimkim/tmp/published-skills-check-d38v970q/checkout\" --dry-run --config /home/vimkim/tmp/published-skills-check-d38v970q/consumer-sync.json\nerror: recipe `sync-dry-run` failed on line 8 with exit code 2\n"
         },
         {
           "argv": [
             "just",
             "--justfile",
-            "/home/vimkim/tmp/published-skills-check-cvb2md01/checkout/justfile",
+            "/home/vimkim/tmp/published-skills-check-d38v970q/checkout/justfile",
             "sync",
             "--config",
-            "/home/vimkim/tmp/published-skills-check-cvb2md01/consumer-sync.json"
+            "/home/vimkim/tmp/published-skills-check-d38v970q/consumer-sync.json"
           ],
           "exit": 2,
-          "output": "conflict: gh-pr-comments-all (untracked/manual installation or unverifiable older content)\nconflict: markdown-write (untracked/manual installation or unverifiable older content)\nconflict: question-socratically (untracked/manual installation or unverifiable older content)\nconflict: resolve-greptile-comments (untracked/manual installation or unverifiable older content)\nconflict: track-work (untracked/manual installation or unverifiable older content)\n'/home/vimkim/.local/share/mise/installs/python/latest/bin/python3' \"/home/vimkim/tmp/published-skills-check-cvb2md01/checkout/scripts/sync_skills.py\" --collection \"/home/vimkim/tmp/published-skills-check-cvb2md01/checkout\" --config /home/vimkim/tmp/published-skills-check-cvb2md01/consumer-sync.json\nerror: recipe `sync` failed on line 5 with exit code 2\n"
+          "output": "conflict: gh-pr-comments-all (untracked/manual installation or unverifiable older content)\nconflict: markdown-write (untracked/manual installation or unverifiable older content)\nconflict: question-socratically (untracked/manual installation or unverifiable older content)\nconflict: resolve-greptile-comments (untracked/manual installation or unverifiable older content)\nconflict: track-work (untracked/manual installation or unverifiable older content)\n'/home/vimkim/.local/share/mise/installs/python/latest/bin/python3' \"/home/vimkim/tmp/published-skills-check-d38v970q/checkout/scripts/sync_skills.py\" --collection \"/home/vimkim/tmp/published-skills-check-d38v970q/checkout\" --config /home/vimkim/tmp/published-skills-check-d38v970q/consumer-sync.json\nerror: recipe `sync` failed on line 5 with exit code 2\n"
         }
       ],
       "passed": true,
       "cli_version": "1.7.0",
       "node_version": "v25.8.0",
-      "source_commit": "244f22763550e67e12f1f9ad3567682fd02c63d7",
+      "source_commit": "6dcbfc847cc6069ac28ff35e8687c594594c7b9c",
       "source_worktree_dirty": false,
       "discovery_without_installation": true,
       "resources_sha256_executable_bits": {
