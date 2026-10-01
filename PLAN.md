@@ -1,6 +1,6 @@
 # Personal skills collection plan
 
-Status: draft for discussion, 2026-10-01. This document records the requested outcome and a proposed implementation. Open decisions below must be resolved before it becomes an implementation spec.
+Status: interview decisions recorded, awaiting final shared-understanding confirmation. This document records the agreed behavior and proposed implementation work; it is not yet an implementation spec.
 
 ## Requested outcome
 
@@ -21,7 +21,7 @@ Start with a short `/grill-with-docs` session to resolve the decisions below. Th
 
 If implementation fits one session, proceed to `/implement` after the decisions are recorded. If it will span sessions or separate repository changes, use `/to-tickets` and implement in dependency order. Tickets produced from the spec do not need triage. Configure the Matt workflow's tracker and document layout through `/setup-matt-pocock-skills` before starting that engineering flow.
 
-The `/grill-with-docs` interview is in progress. Round 1 resolved source ownership, migration scope, and daily refresh behavior; implementation has not begun.
+The `/grill-with-docs` interview resolved source ownership, migration scope, daily refresh behavior, conflicts, and recovery. Final shared-understanding confirmation is pending; implementation has not begun.
 
 ## Proposed repository contract
 
@@ -69,7 +69,7 @@ Reuse the helper as well as the justfile, adapting these concrete details:
 - Its current and historical discovery assumes `<name>/SKILL.md`; adapt both to this plan's `skills/<name>/SKILL.md` layout.
 - Historical names come from `git log --all`; any name present in the global lock is excluded from removal, regardless of its recorded source. Git history is candidate evidence, not proof of current installation ownership.
 - A skill moved into another local collection may have no lock entry. Protect destination-owned names before either collection syncs so the old collection cannot delete the migrated copy.
-- Pruning happens before installation, so an installation failure can leave removed skills absent. Define recovery before adopting this sequence for automated daily runs.
+- The existing helper prunes before installation. Change this sequence: verify new installations before pruning and retain recoverable copies of removed skills. A failed installation must not trigger pruning.
 
 Validate recipe parsing, dry-run behavior, and migration behavior in a disposable home. This inspection read the helper; it did not run a live sync or validate its deletion behavior experimentally.
 
@@ -95,7 +95,7 @@ Represent both personal collections explicitly and have daily-update invoke thei
 
 Before automating sync, establish ownership across both collections so migrations survive either processing order. Preserve manually managed skills and other-source installations. Missing repositories, failed scans, and failed installs must not be treated as source deletions. Use the CLI's existing metadata where sufficient and add only the missing ownership or migration protection.
 
-The adopted sync contract includes pruning during sync; it supersedes the earlier proposal that collection pruning occurs only through `daily-update --prune`. A dry run must show what collection sync would remove. Specify recoverability and failure behavior in the implementation spec; the current helper does not provide the dated-trash mechanism used by daily-update's existing prune path.
+The adopted sync contract includes pruning during sync; it supersedes the earlier proposal that collection pruning occurs only through `daily-update --prune`. A dry run must show what collection sync would remove. Verify new installations before pruning, retain recoverable copies of removed skills, and report failures clearly. A failed collection must not prevent the other collection from syncing, but unresolved ownership must still prevent unsafe removal. The current helper does not yet provide this recovery contract.
 
 Locate the version-controlled source of the deployed daily-update script before editing it; the deployed directory itself did not resolve as a Git worktree during inspection. The user approved daily-update fast-forwarding clean source checkouts before sync. Dirty or diverged checkouts are reported and skipped without modification. The collection sync command itself does not pull Git changes.
 
@@ -105,13 +105,16 @@ Locate the version-controlled source of the deployed daily-update script before 
 2. Resolved: my-skills is the authoritative editable source for migrated skills. GitHub is the remote backup; installed copies are generated. Each skill belongs to one collection.
 3. Resolved: migrate gh-pr-comments-all, resolve-greptile-comments, markdown-write, question-socratically, and track-work. Defer daily-schedule.
 4. Resolved: support GitHub URL installation and reuse the collection-only sync interface. Daily-update fast-forwards clean checkouts, then calls local just sync. Report and skip dirty or diverged checkouts.
-5. Resolve migration ownership and recovery for sync pruning before enabling automated runs. The interface now includes pruning as part of sync.
+5. Resolved: report and skip directly edited installed skills or same-name conflicts with another collection. Resolve conflicts at the source before syncing again; explicitly transfer ownership for the five approved migrations.
+6. Resolved: verify new installations before pruning, keep recoverable copies of removed skills, and report failures. Continue syncing the other collection when one fails, subject to ownership protection.
+
+All interview behavior decisions are answered. The user’s final confirmation of the consolidated understanding is pending. CLI behavior, metadata representation, and migration mechanics require implementation investigation and verification rather than additional preference questions.
 
 ## Implementation slices
 
 These are planning slices, not published tickets.
 
-1. **Repository foundation:** settle visibility and source-of-truth policy; create the remote; add repository guidance, inventory, and installation interface. Done when a disposable install discovers the intended skills and resources.
+1. **Repository foundation:** the public remote and source-of-truth policy are settled; add repository guidance, inventory, and the sync interface. Done when a disposable install discovers the intended skills and resources.
 2. **Installation and ownership:** locate the daily-update source repository; support both collections; verify actual installer behavior and persist ownership safely. Done when repeated updates are idempotent and failures preserve existing installations.
 3. **Migration and pruning:** depends on slices 1 and 2. Move the agreed skills, update references, transfer ownership, and implement stale detection and recoverable removal. Done when migrated skills survive pruning and genuinely removed managed skills can be recovered from trash.
 4. **Verification and documentation:** depends on slice 3. Run isolated end-to-end checks, document recovery and operation, and review the final changes in each repository.
@@ -125,7 +128,8 @@ Each affected repository follows the user's topic-worktree workflow: scoped comm
 - A migrated skill remains installed through updates and pruning regardless of collection processing order.
 - Removing a managed source skill produces a stale candidate; `sync-dry-run` previews it and `sync` removes it with the agreed recovery mechanism and ownership handling.
 - Missing repositories, network failures, malformed state, incomplete scans, and failed installs do not cause removal or loss of the last working copy.
-- Manual skills, other-source skills, edited installations, and same-name collisions are handled without silent data loss.
+- Directly edited installed skills and same-name conflicts are reported and skipped; approved migrations explicitly transfer ownership. Manual and other-source skills remain protected.
+- A failed collection reports its failure while the other collection can still sync safely. Failed installation prevents pruning, and removed copies remain recoverable.
 - Existing unrelated daily-update behavior remains functional; the collection justfile contains no third-party update recipes.
 - Source scans find no broken migrated paths or missing resources; repository diffs contain only the agreed changes.
 
