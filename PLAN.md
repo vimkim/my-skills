@@ -21,7 +21,7 @@ Start with a short `/grill-with-docs` session to resolve the decisions below. Th
 
 If implementation fits one session, proceed to `/implement` after the decisions are recorded. If it will span sessions or separate repository changes, use `/to-tickets` and implement in dependency order. Tickets produced from the spec do not need triage. Configure the Matt workflow's tracker and document layout through `/setup-matt-pocock-skills` before starting that engineering flow.
 
-The `/grill-with-docs` interview resolved source ownership, migration scope, daily refresh behavior, conflicts, and recovery. Final shared-understanding confirmation is pending; implementation has not begun.
+The `/grill-with-docs` interview resolved source ownership, migration scope, daily refresh behavior, conflicts, recovery, and implementation language. Final shared-understanding confirmation is pending; implementation has not begun.
 
 ## Proposed repository contract
 
@@ -64,7 +64,7 @@ Use `my-cubrid-skills` commit `795015e` as the baseline. Its justfile now contai
 
 Adopt `sync` and `sync-dry-run` here. The previous proposal for `install`, `reinstall`, `install-published`, and global update recipes is superseded. Document the direct GitHub URL command separately. Keep third-party skill management outside this collection's justfile; the existing list/remove commands themselves are global views/actions rather than collection-filtered operations.
 
-Reuse the helper as well as the justfile, adapting these concrete details:
+Reuse the justfile interface and port the helper’s relevant behavior to Python, adapting these concrete details:
 
 - Its current and historical discovery assumes `<name>/SKILL.md`; adapt both to this plan's `skills/<name>/SKILL.md` layout.
 - Historical names come from `git log --all`; any name present in the global lock is excluded from removal, regardless of its recorded source. Git history is candidate evidence, not proof of current installation ownership.
@@ -72,6 +72,16 @@ Reuse the helper as well as the justfile, adapting these concrete details:
 - The existing helper prunes before installation. Change this sequence: verify new installations before pruning and retain recoverable copies of removed skills. A failed installation must not trigger pruning.
 
 Validate recipe parsing, dry-run behavior, and migration behavior in a disposable home. This inspection read the helper; it did not run a live sync or validate its deletion behavior experimentally.
+
+## Implementation language
+
+The user selected Python 3 for synchronization, with the standard library only. Keep justfile as the command interface and keep daily-update's existing Bash entry point, which invokes collection sync.
+
+- Implement ownership tracking, file comparison, conflict handling, dry runs, and recovery in Python.
+- Invoke git and npx skills through subprocess argument lists; retain the skills CLI as the installer.
+- Require no third-party Python packages or virtual environment for normal operation.
+- Port the existing shell helper's relevant behavior while applying the agreed ownership and failure rules; copying the shell helper unchanged is superseded.
+- Use Python's standard-library test tools and disposable directories for behavioral verification. Select and document the minimum Python version during implementation after inspecting the target environment.
 
 ## Migration candidates
 
@@ -108,7 +118,9 @@ Locate the version-controlled source of the deployed daily-update script before 
 5. Resolved: report and skip directly edited installed skills or same-name conflicts with another collection. Resolve conflicts at the source before syncing again; explicitly transfer ownership for the five approved migrations.
 6. Resolved: verify new installations before pruning, keep recoverable copies of removed skills, and report failures. Continue syncing the other collection when one fails, subject to ownership protection.
 
-All interview behavior decisions are answered. The user’s final confirmation of the consolidated understanding is pending. CLI behavior, metadata representation, and migration mechanics require implementation investigation and verification rather than additional preference questions.
+7. Resolved: implement synchronization in Python 3 using only the standard library; expose it through justfile and keep daily-update in Bash.
+
+All interview behavior and language decisions are answered. The user’s final confirmation of the consolidated understanding is pending. CLI behavior, metadata representation, and migration mechanics require implementation investigation and verification rather than additional preference questions.
 
 ## Implementation slices
 
