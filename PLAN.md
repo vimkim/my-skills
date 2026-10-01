@@ -53,6 +53,21 @@ These are target commands for the completed collection. The repository currently
 
 Proposed default: use the GitHub source for normal installation and reserve local-path installation for development. Confirm the daily-update source policy during the interview. Prefer the CLI's existing source metadata and update behavior; add ownership state only for demonstrated gaps. Validate initial installation, discovery of newly added skills, updates to existing skills, and deleted-skill handling separately.
 
+## Reuse the existing justfile
+
+Use `my-cubrid-skills/justfile` as the starting point for this collection's command interface. It already wraps the skills CLI: `just install` runs `npx skills add . -y -g --agent claude-code --agent codex`, and `reinstall` aliases `install`. The local `cubrid-build` installation exists in the shared store, with a Claude symlink, and no matching entry was found in the global lock during inspection. This is consistent with the existing local-path installation workflow; it does not establish which historical command installed it.
+
+Proposed small improvements when implementing the justfile:
+
+- Keep `install` and `reinstall` for installing the current checkout; explicitly select all collection skills with `--skill '*'`.
+- Add `install-published` for installing `https://github.com/vimkim/my-skills` with the same agent and scope choices. Document which source each recipe uses.
+- Keep `list` and add a discovery recipe that lists this collection's available skills without installing.
+- Make `update` refresh only this checkout with `git pull --ff-only` and reinstall this collection. Keep the all-collections global update as a separately named recipe; the existing `update` mixes both scopes.
+- Validate supported flags against the actual CLI before copying `update-installed`; its existing agent flags must not be assumed to filter updates.
+- Quote the skill argument safely and specify the intended agents for explicit removal. Collection-wide stale pruning remains the responsibility of `daily-update`.
+
+The justfile is a convenience wrapper around the same CLI used by GitHub URL installation. It does not need a separate installer. Reusing it does not by itself implement stale-skill detection or pruning. Validate recipe parsing and dry-run output before running installs in a disposable home.
+
 ## Migration candidates
 
 These are candidates from the existing tree, not an approved move list or a completed dependency audit.
