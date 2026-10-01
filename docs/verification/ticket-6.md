@@ -2,23 +2,38 @@
 
 ## Status
 
-**Incomplete: publication gate remains blocked.** No push, default-branch merge,
-or deployment was authorized by this ticket. Do not close #6 based on the local
-checks below. The validator does not push or publish anything.
+**Acceptance verified against the published default branch.** Following explicit
+publication authorization, the real plain GitHub URL and repository shorthand
+both passed the default checker on **2026-10-01 at 07:31 UTC**, against `main`
+commit **`1f636b69ab94e6e325857d3c0c892969fb3f81e2`**. The installed CLI was
+**skills 1.7.0**, run through the documented default `npx` invocation, with
+**Node v25.8.0** and no installer override.
 
-Read-only checks against the real public repository found `main` at
-`cca994efc008eec57e822805ccc152d9db957cce`. With real **skills 1.7.0** and
-**Node v25.8.0**, both commands exited **1**, reporting **No skills found**:
+[Complete published evidence](ticket-6-published.json) records every command,
+exit status, resource fingerprint and source revision. Both cases passed and
+`published_default_branch_verified` is **true**.
 
-```sh
-npx --yes skills@1.7.0 add https://github.com/vimkim/my-skills --list
-npx --yes skills@1.7.0 add vimkim/my-skills --list
-```
+| Acceptance criterion | Verified result |
+| --- | --- |
+| Full URL and shorthand discovery | Both `add <source> --list` commands returned 0 and listed the five names without creating installed skills. |
+| Real installation without a pre-existing checkout | Each source form installed in its own fresh disposable home and empty consumer directory, returning 0. Source cloning for comparison happened afterward. |
+| Both intended agents | Exactly five canonical Codex-compatible skill directories and five correct Claude Code symlinks were verified for each source form. |
+| Names, metadata and supporting resources | All five unchanged names and metadata passed; all ten files matched the fresh published checkout byte-for-byte and by executable bits. Four installed Markdown regression tests and Mermaid syntax validation passed in each home. |
+| Consumer documentation and prerequisites | README documents both source forms, discovery, intended agents, runtime requirements, local synchronization and conflict handling. External authentication, work-tracker and viewer requirements are explicitly identified. |
+| Plain published default branch | Both sources used `1f636b69ab94e6e325857d3c0c892969fb3f81e2`; checks rejected branch changes during or between cases. Publication was explicitly authorized before this run. |
+| Evidence and isolation | Report records source commit, skills/Node versions, exact commands and all resource hashes. Home, agent directories, npm/XDG caches, Git configuration and temporary files were isolated and removed afterward. |
+| Subsequent local sync | Each dry run and real sync returned **2**, reporting protected conflicts for all five names; the complete consumer home, installed resources and ownership remained unchanged. No silent ownership reassignment occurred. |
 
-Consequently, neither public-source installation nor its subsequent local-sync
-transition could be checked yet. Full URL and shorthand use independent disposable
-homes. [Recorded command output](ticket-6-published.json) preserves the default
-branch revision, actual CLI invocation, version, and failed discovery for each.
+The protected-conflict result satisfies the agreed transition criterion. The
+check does **not** claim the remote installation was automatically adopted into
+local ownership. Consumers should follow the README conflict-review procedure.
+
+The earlier checks against unpublished content correctly failed discovery at
+`cca994efc008eec57e822805ccc152d9db957cce`; that historical evidence remains in
+[the pre-publication report](ticket-6-published-before-publication.json). Those
+failures are superseded by the published verification above.
+
+No live installation, dotfiles deployment or third-party update was performed.
 
 ## Local preparation
 
@@ -51,12 +66,12 @@ configured viewer bundle and jsdom; only syntax was checked here. Authenticated
 GitHub operations and the external work-tracker ledger were not exercised.
 Those runtime prerequisites are documented in the README and bundled skills.
 
-The final recorded checks use the documented default npx path for **both** local
+The recorded checks use the documented default npx path for **both** local
 and published modes. Independent review found that the initial cached-CLI check
 had bypassed an npm configuration error: npm rejects using `/dev/null` as both
 its user and global configuration file. The checker now creates distinct empty
 configuration files inside each disposable directory; the default npx path
-passes the local check and reaches the expected published discovery failure.
+passes both the local rehearsal and the published check.
 
 ## Reproduce
 
@@ -69,7 +84,7 @@ comparison happens only **after** remote installation.
 # Local preparation; explicitly cannot satisfy the publication gate.
 python3 tests/check_published.py --local --output /tmp/my-skills-local.json
 
-# Run after separately authorized default-branch publication.
+# Check the real published default branch through both source forms.
 python3 tests/check_published.py --output /tmp/my-skills-published.json
 ```
 
@@ -95,8 +110,7 @@ verified `vimkim/my-skills` ownership or report protected conflicts with unchang
 installation and ownership. It rejects a default branch that advances during a
 case or between the two cases so a passing report identifies one source commit.
 
-After publication, both cases must pass and the JSON field
-`published_default_branch_verified` must be `true` before closing #6. Review the
-recorded source commit and resource evidence, then update this status and the
-README publication notice. A local pass, temporary branch URL or successful
-push alone does not establish acceptance.
+For future published revisions, rerun the default check and require both cases
+to pass with `published_default_branch_verified` set to `true`. Review the
+recorded source commit and resource evidence. A local pass, temporary branch URL
+or successful push alone does not establish acceptance.

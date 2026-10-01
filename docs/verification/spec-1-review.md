@@ -14,7 +14,7 @@ present). Work followed #2 → #3 → (#4 and #5), with #6 released after #4 alo
 | #3 | `4fa4816` in my-skills; `48497b1` in my-cubrid-skills | Deletion/rename, actual recovery of resources/modes/links/state/installer metadata, peer protection and explicit five-name transfers in both orders. All 26 command tests passed on Python 3.12 and 3.14. Coordinator reran the suite and the actual old `just`/Bash wrapper smoke; vendored engines match. |
 | #4 | `8a2fe86` in my-skills; `4292b76` in my-cubrid-skills | Exactly five names and ten files migrated unchanged, with provenance and MIT declaration; 18 old skills remain. Coordinator passed 27 standard tests and seven actual-resource migration scenarios. Agent passed three real CLI scenarios, four preserved resource tests and JavaScript syntax validation. Destination installation was verified before original source removal. |
 | #5 | `2cacf35` in dotfiles | The version-controlled Bash entry point refreshes clean checkouts before local sync, skips dirty/ahead/diverged/unavailable checkouts and continues independent collections. Coordinator passed all 13 entry-point tests, Bash syntax, ShellCheck and the target-only rendered chezmoi diff. Both orders, refresh/sync failures, malformed metadata and third-party isolation are covered. |
-| #6 | `9a4024c` in my-skills | Consumer documentation and a real CLI validator are ready. The default `npx` local rehearsal passes; both real public source forms fail discovery with “No skills found” at published `main` commit `cca994efc008eec57e822805ccc152d9db957cce`. Full published installation and its local-sync transition remain unverified; this ticket stays open. |
+| #6 | Published `1f636b6` in my-skills | Both real plain GitHub URL and shorthand passed default `npx` discovery and installation on 2026-10-01 with skills 1.7.0 / Node v25.8.0. Each verified five names, all ten resource files, both agent layouts, four installed Markdown tests and Mermaid syntax. Subsequent local sync reported protected conflicts for all five skills and preserved installation/ownership. The published gate is satisfied; full JSON evidence is retained. |
 
 The final sync implementation deliberately protects unverifiable legacy local
 installations, even if their content currently matches a source. The real
@@ -52,6 +52,7 @@ python3 tests/check_migration.py /path/to/my-cubrid-skills --real
 PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s skills/markdown-write/tests -v
 node --check skills/markdown-write/scripts/check_mermaid_blocks.mjs
 python3 tests/check_published.py --local --output /tmp/my-skills-local.json
+python3 tests/check_published.py --output /tmp/my-skills-published.json
 ```
 
 From the dotfiles topic checkout:
@@ -68,25 +69,25 @@ substitutes cover failures; real installer checks use pinned `skills@1.7.0`.
 No test upgrades live tools, changes live installed skills, or deploys dotfiles.
 Detailed evidence and prerequisites are in [migration documentation](../migration.md),
 [ticket #2 evidence](ticket-2.md), and dotfiles `docs/daily-update.md`.
-The [ticket #6 report](ticket-6.md) links complete local and published-attempt
+The [ticket #6 report](ticket-6.md) links complete local and successful published
 JSON evidence, including CLI version, source commit, outcomes and resource hashes.
 
-## Remaining authorization and completion gates
+## Integration and completion status
 
-The implementation is committed on topic branches for review. The user-provided
-AGENTS.md requires approval before rebasing and fast-forward merging into local
-`main`. That approval does not authorize a push or live deployment. The dotfiles
-managed target is exactly `~/.config/my-scripts/bin/daily-update`; a future
-authorized deployment must be limited to that target.
+The user approved local rebase and fast-forward integration, and the changes in
+my-skills, my-cubrid-skills and dotfiles were merged into their local `main`
+branches. Tickets #2–#5 are closed after acceptance verification. The user then
+explicitly authorized publishing my-skills and completing the final checks.
+Published `main` commit `1f636b69ab94e6e325857d3c0c892969fb3f81e2` passed both
+plain URL and shorthand checks with `published_default_branch_verified: true`.
+Ticket #6 and spec #1 now have all implementation acceptance evidence needed
+for the coordinator's final review and closure.
 
-Tickets #2–#5 have passed local implementation acceptance and remain open pending
-approved integration. Ticket #6 and parent spec #1 remain incomplete until the
-migrated content is explicitly authorized for publication on the GitHub default
-branch and both plain URL and shorthand installation checks pass there. The
-published source commit and CLI version must be retained with those results.
-After authorized publication, run `python3 tests/check_published.py --output
-/tmp/my-skills-published.json`; both source forms must pass and
-`published_default_branch_verified` must be `true` before closing #6 or #1.
+This completion does not claim deployment. The other two repositories are
+locally integrated; their remote publication and live deployment are separate
+operations. The dotfiles managed target is exactly
+`~/.config/my-scripts/bin/daily-update`; a future authorized deployment must be
+limited to that target. No validation run modified live installed skills.
 
 Promotion rolls back ordinary I/O failures but is not a power-loss or forced-kill
 transaction guarantee. Cooperating syncs serialize; running unrelated installers

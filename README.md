@@ -18,11 +18,11 @@ These skills retain their invocation names, original content and supporting reso
 
 ## Install from GitHub
 
-**Publication status:** the migrated content is prepared locally. The plain public
-URL and shorthand checks remain blocked until the reviewed commits are published
-on the default branch with separate push authorization. These commands become
-usable for the five-skill collection after that publication; a branch install or
-local rehearsal does not establish the public default-branch check.
+**Publication verified:** the plain GitHub URL and repository shorthand both
+passed isolated discovery and installation for Claude Code and Codex on
+2026-10-01, using published `main` commit `1f636b6` and `skills@1.7.0`.
+[Verification evidence](docs/verification/ticket-6.md) records all resources,
+command outcomes and the protected transition to local sync.
 
 Installation requires Git and Node **22.20+** with npm/npx. It does not require a
 pre-existing checkout, Python, or just. Individual skills have the runtime
@@ -104,7 +104,7 @@ Sync invokes the existing CLI with subprocess argument lists in a disposable hom
 
 `SKILLS_SYNC_INSTALLER` is an optional JSON argument list for an inspected installer executable or a deterministic test substitute; it is never shell-evaluated. Tests exercise `just sync` and `just sync-dry-run` with temporary Git repositories and disposable homes/caches. `tests/real_smoke.py` exercises first installation, updates, resources, both agents and repeat idempotence with the real pinned CLI. It downloads only into a disposable npm cache by default; `SKILLS_REAL_INSTALLER='["node","/absolute/path/to/skills/bin/cli.mjs"]'` reuses an already inspected installer without modifying its installation.
 
-Public default-branch GitHub URL and shorthand installation will be verified after the approved migration is published (ticket #6). Local smoke checks are not evidence of that publication gate.
+Public default-branch GitHub URL and shorthand installation passed the [published consumer check](docs/verification/ticket-6.md). A subsequent local sync reported protected conflicts and preserved the remote installation and ownership; review conflicts using the process above.
 
 ## Obsolete skills, migration and recovery
 
