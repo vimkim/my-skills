@@ -2,6 +2,20 @@
 
 This repository is a **source collection**: edit skills here. Installed skills are generated copies for Codex and Claude Code. A skill directory contains `SKILL.md` with matching `name` and a nonempty `description` in YAML frontmatter, plus its supporting resources. Skills live in `skills/<name>/`; keep the container present even when empty.
 
+## Skills
+
+| Invocation name | Purpose | Additional requirements |
+|---|---|---|
+| `gh-pr-comments-all` | Fetch all three GitHub PR comment streams | Authenticated `gh`, `jq`, Bash and standard shell tools |
+| `resolve-greptile-comments` | Resolve replied Greptile review threads | Authenticated `gh` with repository permissions, Bash and standard shell tools |
+| `markdown-write` | Write and validate copyparty-compatible Markdown | Python 3; Node/npm and `jsdom` for Mermaid; configured viewer and its vendored Mermaid bundle for rendering checks |
+| `question-socratically` | One-question-at-a-time Socratic dialogue | No external command |
+| `track-work` | Maintain durable work status and history | `work-tracker` CLI and configured ledger |
+
+These skills retain their invocation names, original content and supporting resources. `markdown-write` includes two executable validators, its regression tests and agent metadata; `track-work` includes agent metadata. The Mermaid validator resolves its bundle from the target document tree or `MERMAID_BUNDLE`, and may install `jsdom` into `~/.cache/markdown-write-skill`. It does not bundle the viewer or dependencies. Install `work-tracker` from its source repository with `just install` when unavailable; the skill uses the executable on `PATH` and its configured ledger.
+
+`daily-schedule` and `my-cubrid-skills-create` remain in the CUBRID collection. The former invokes this collection's `track-work`; `gh-pr-comments-all` refers to `resolve-greptile-comments` by its unchanged invocation name. See [migration provenance, sequence and verification](docs/migration.md).
+
 ## Requirements and commands
 
 Linux, Python **3.12+**, Git, just, and Node **22.20+** with npm/npx are required. Python uses only its standard library; no virtual environment is needed. The installer is pinned to `skills@1.7.0`. Tests ran on Python 3.12 and 3.14.6; the real installer smoke used Node 25.8.0. Set `SKILLS_SYNC_PYTHON` to select a different Python executable.
@@ -57,3 +71,7 @@ just sync --restore /absolute/path/to/recovery/removed-XXXX
 Restore checks fingerprints, refuses to overwrite any existing installation or ownership, recreates the Claude link, and restores the saved state and metadata. Recovery copies remain available afterward. Restore the corresponding source directory before the next normal sync to avoid intentionally pruning it again. Explicit `just remove` is a separate installer operation and has no recovery snapshot.
 
 The old collection vendors an identical copy of `scripts/sync_skills.py` at `tools/sync_skills.py`, so it can synchronize without importing unpublished code from another checkout. This repository is the authoritative engine source: update both copies together and verify the old entry point with `python3 tests/check_vendored_sync.py /path/to/my-cubrid-skills`. The check reads real source metadata but confines all installation/removal/recovery work to temporary checkouts and homes. The public-command suite covers both processing orders, all five names, local/GitHub metadata transitions, failures, conflicts, and actual restoration.
+
+## License and provenance
+
+The migrated skills retain the source collection’s **MIT** declaration. [Provenance](docs/migration.md#provenance) records the original repository, revision, authorship and complete resource fingerprints.

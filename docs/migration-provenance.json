@@ -1,0 +1,57 @@
+{
+  "source": "https://github.com/vimkim/my-cubrid-skills",
+  "revision": "795015ef32b3f97dd550955309eca53556aada55",
+  "license_declaration": "MIT",
+  "files": {
+    "skills/gh-pr-comments-all/SKILL.md": {
+      "source_path": "gh-pr-comments-all/SKILL.md",
+      "sha256": "cfae68a7afc55727a0724a7111a8664d7deb0a825ee8dcca854440ee13619efc",
+      "executable": false
+    },
+    "skills/resolve-greptile-comments/SKILL.md": {
+      "source_path": "resolve-greptile-comments/SKILL.md",
+      "sha256": "49324eb66cf59cce7bdd397390306b1d88d95c460c81ced086f19b2ea5cb666d",
+      "executable": false
+    },
+    "skills/markdown-write/SKILL.md": {
+      "source_path": "markdown-write/SKILL.md",
+      "sha256": "e516fa9fa1ab8679103f4a14d713c9978cc9e83ae91a864e35e3b3dda9ea4d19",
+      "executable": false
+    },
+    "skills/markdown-write/agents/openai.yaml": {
+      "source_path": "markdown-write/agents/openai.yaml",
+      "sha256": "5cf4e85b753d563d5cb0cfcef563ee56d67cde895596fa873cd91f3e4df55c7b",
+      "executable": false
+    },
+    "skills/markdown-write/scripts/check_copyparty_markdown.py": {
+      "source_path": "markdown-write/scripts/check_copyparty_markdown.py",
+      "sha256": "7e35495d8d9c5987b9fb890ed26d7a084aee3c9572bed7eeac013959ec4b1d7d",
+      "executable": true
+    },
+    "skills/markdown-write/scripts/check_mermaid_blocks.mjs": {
+      "source_path": "markdown-write/scripts/check_mermaid_blocks.mjs",
+      "sha256": "b4d6d94c3a2ca2e2ad537b799deb91a137fb041cc253df7101ab1447ce02992f",
+      "executable": true
+    },
+    "skills/markdown-write/tests/test_check_copyparty_markdown.py": {
+      "source_path": "markdown-write/tests/test_check_copyparty_markdown.py",
+      "sha256": "4cc6e3edb5807eacd0b316fd05777fea2f6b5c5cb075eeddd6d676dfbcca30f1",
+      "executable": false
+    },
+    "skills/question-socratically/SKILL.md": {
+      "source_path": "question-socratically/SKILL.md",
+      "sha256": "f4a7761b509e94aab549b5aab92f0fcd263c5d521ed190bd52c360272dbe79bf",
+      "executable": false
+    },
+    "skills/track-work/SKILL.md": {
+      "source_path": "track-work/SKILL.md",
+      "sha256": "0cb7eac84526239914443be5d4f623ca1844af53cfccf449d9cedea0b3a78414",
+      "executable": false
+    },
+    "skills/track-work/agents/openai.yaml": {
+      "source_path": "track-work/agents/openai.yaml",
+      "sha256": "124a32391976e8ac7200f369457ea5ea3f9d82aae7d424fc261918b6373daf5f",
+      "executable": false
+    }
+  }
+}

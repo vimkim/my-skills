@@ -1,0 +1,4 @@
+interface:
+  display_name: "Track Work"
+  short_description: "Track long-running work across agent sessions"
+  default_prompt: "Use $track-work to register this work and keep its status and context current."

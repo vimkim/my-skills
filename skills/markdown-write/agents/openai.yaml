@@ -1,0 +1,4 @@
+interface:
+  display_name: "Write Copyparty Markdown"
+  short_description: "Write Markdown with SVG, Mermaid, and math"
+  default_prompt: "Use $markdown-write to create a copyparty-compatible Markdown document with appropriate diagrams and equations."
