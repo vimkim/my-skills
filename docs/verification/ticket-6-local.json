@@ -1,0 +1,204 @@
+{
+  "checked_at_utc": "2026-10-01T07:15:47.775621+00:00",
+  "mode": "local rehearsal",
+  "published_default_branch_verified": false,
+  "cases": [
+    {
+      "source": "/home/vimkim/gh/my-skills-ticket6",
+      "commands": [
+        {
+          "argv": [
+            "node",
+            "/home/vimkim/.npm/_npx/ac0ed6aa23b37c1e/node_modules/skills/bin/cli.mjs",
+            "--version"
+          ],
+          "exit": 0,
+          "output": "1.7.0\n"
+        },
+        {
+          "argv": [
+            "node",
+            "--version"
+          ],
+          "exit": 0,
+          "output": "v25.8.0\n"
+        },
+        {
+          "argv": [
+            "git",
+            "-C",
+            "/home/vimkim/gh/my-skills-ticket6",
+            "rev-parse",
+            "HEAD"
+          ],
+          "exit": 0,
+          "output": "244f22763550e67e12f1f9ad3567682fd02c63d7\n"
+        },
+        {
+          "argv": [
+            "node",
+            "/home/vimkim/.npm/_npx/ac0ed6aa23b37c1e/node_modules/skills/bin/cli.mjs",
+            "add",
+            "/home/vimkim/gh/my-skills-ticket6",
+            "--list"
+          ],
+          "exit": 0,
+          "output": "\n\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2557  \u2588\u2588\u2557\u2588\u2588\u2557\u2588\u2588\u2557     \u2588\u2588\u2557     \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557\n\u2588\u2588\u2554\u2550\u2550\u2550\u2550\u255d\u2588\u2588\u2551 \u2588\u2588\u2554\u255d\u2588\u2588\u2551\u2588\u2588\u2551     \u2588\u2588\u2551     \u2588\u2588\u2554\u2550\u2550\u2550\u2550\u255d\n\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2588\u2588\u2588\u2554\u255d \u2588\u2588\u2551\u2588\u2588\u2551     \u2588\u2588\u2551     \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557\n\u255a\u2550\u2550\u2550\u2550\u2588\u2588\u2551\u2588\u2588\u2554\u2550\u2588\u2588\u2557 \u2588\u2588\u2551\u2588\u2588\u2551     \u2588\u2588\u2551     \u255a\u2550\u2550\u2550\u2550\u2588\u2588\u2551\n\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2551\u2588\u2588\u2551  \u2588\u2588\u2557\u2588\u2588\u2551\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2551\n\u255a\u2550\u2550\u2550\u2550\u2550\u2550\u255d\u255a\u2550\u255d  \u255a\u2550\u255d\u255a\u2550\u255d\u255a\u2550\u2550\u2550\u2550\u2550\u2550\u255d\u255a\u2550\u2550\u2550\u2550\u2550\u2550\u255d\u255a\u2550\u2550\u2550\u2550\u2550\u2550\u255d\n\n\u250c   skills \n\u2502\n\u2502  Tip: use the --yes (-y) and --global (-g) flags to install without prompts.\n\u2502\n\u25c7  Source: /home/vimkim/gh/my-skills-ticket6\n\u2502\n\u25c7  Local path validated\n\u2502\n\u25c7  Found 5 skills\n\n\u2502\n\u25c7  Available Skills\n\u2502\n\u2502    gh-pr-comments-all\n\u2502\n\u2502      Fetch every comment on a GitHub PR by querying all three GitHub REST endpoints (inline review comments, top-level review summaries, and PR-page discussion) and merging them into one chronological view. Use when the user asks to list all PR review comments, audit reviewer feedback, or check whether anything was missed \u2014 a single endpoint fetch silently drops top-level review bodies and conversation-tab comments. Triggers on phrases like 'list all pr comments', 'all comments on pr', 'fetch every review comment', 'audit pr feedback', 'why are some review comments missing', or 'show every reviewer comment'.\n\u2502\n\u2502    markdown-write\n\u2502\n\u2502      Write or revise repository-agnostic Markdown for a configured copyparty standalone viewer, using compatible external or inline SVG, Mermaid diagrams, and MathJax equations. Use when a document will be opened as `*.md?v` or when copyparty rendering compatibility matters. Triggers on phrases like 'write copyparty markdown', 'create a copyparty-compatible markdown file', 'add Mermaid and LaTeX for copyparty', or 'make this markdown render in copyparty'.\n\u2502\n\u2502    question-socratically\n\u2502\n\u2502      Guide reflection through one Socratic question at a time. Use when the user wants Socratic dialogue to examine assumptions, contradictions, or definitions in their own thinking. Triggers on phrases like '\uc18c\ud06c\ub77c\ud14c\uc2a4\ucc98\ub7fc \uc9c8\ubb38\ud574\uc918', '\uc815\ub2f5 \ub300\uc2e0 \uc9c8\ubb38 \ud558\ub098\uc529 \ud574\uc918', 'help me examine my assumptions'.\n\u2502\n\u2502    resolve-greptile-comments\n\u2502\n\u2502      Resolve replied Greptile bot review comments on a GitHub PR. Use when the user wants to close, resolve, or dismiss Greptile comments that already have replies, or when they mention cleaning up bot review threads on a PR. Triggers on phrases like 'close greptile comments', 'resolve bot comments', 'clean up greptile threads', or 'dismiss replied review comments'.\n\u2502\n\u2502    track-work\n\u2502\n\u2502      Track long-running and parallel work in the work-tracker ledger through its CLI, preserving status, notes, and history across agent sessions. Automatically register substantive work expected to run for 30 minutes or more, cross sessions, use parallel agents, or wait on long external queues; also use when explicitly asked to register, resume, update, complete, cancel, or inspect tracked work. Triggers on phrases like 'track this work', 'loop until CI passes', 'wait for company CI', 'run agents in parallel', 'check today's work', 'update work status', or 'resume work item'.\n\n\u2502\n\u2514  Use --skill <name> to install specific skills\n\n"
+        },
+        {
+          "argv": [
+            "node",
+            "/home/vimkim/.npm/_npx/ac0ed6aa23b37c1e/node_modules/skills/bin/cli.mjs",
+            "add",
+            "/home/vimkim/gh/my-skills-ticket6",
+            "--global",
+            "--skill",
+            "*",
+            "--agent",
+            "claude-code",
+            "codex",
+            "--yes"
+          ],
+          "exit": 0,
+          "output": "\n\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2557  \u2588\u2588\u2557\u2588\u2588\u2557\u2588\u2588\u2557     \u2588\u2588\u2557     \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557\n\u2588\u2588\u2554\u2550\u2550\u2550\u2550\u255d\u2588\u2588\u2551 \u2588\u2588\u2554\u255d\u2588\u2588\u2551\u2588\u2588\u2551     \u2588\u2588\u2551     \u2588\u2588\u2554\u2550\u2550\u2550\u2550\u255d\n\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2588\u2588\u2588\u2554\u255d \u2588\u2588\u2551\u2588\u2588\u2551     \u2588\u2588\u2551     \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557\n\u255a\u2550\u2550\u2550\u2550\u2588\u2588\u2551\u2588\u2588\u2554\u2550\u2588\u2588\u2557 \u2588\u2588\u2551\u2588\u2588\u2551     \u2588\u2588\u2551     \u255a\u2550\u2550\u2550\u2550\u2588\u2588\u2551\n\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2551\u2588\u2588\u2551  \u2588\u2588\u2557\u2588\u2588\u2551\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2551\n\u255a\u2550\u2550\u2550\u2550\u2550\u2550\u255d\u255a\u2550\u255d  \u255a\u2550\u255d\u255a\u2550\u255d\u255a\u2550\u2550\u2550\u2550\u2550\u2550\u255d\u255a\u2550\u2550\u2550\u2550\u2550\u2550\u255d\u255a\u2550\u2550\u2550\u2550\u2550\u2550\u255d\n\n\u250c   skills \n\u2502\n\u2502  Tip: use the --yes (-y) and --global (-g) flags to install without prompts.\n\u2502\n\u25c7  Source: /home/vimkim/gh/my-skills-ticket6\n\u2502\n\u25c7  Local path validated\n\u2502\n\u25c7  Found 5 skills\n\u2502\n\u25cf  Installing all 5 skills\n\n\u2502\n\u25c7  Installation Summary \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u256e\n\u2502                                              \u2502\n\u2502  ~/.agents/skills/gh-pr-comments-all         \u2502\n\u2502    universal: Codex                          \u2502\n\u2502    symlink \u2192 Claude Code                     \u2502\n\u2502                                              \u2502\n\u2502  ~/.agents/skills/markdown-write             \u2502\n\u2502    universal: Codex                          \u2502\n\u2502    symlink \u2192 Claude Code                     \u2502\n\u2502                                              \u2502\n\u2502  ~/.agents/skills/question-socratically      \u2502\n\u2502    universal: Codex                          \u2502\n\u2502    symlink \u2192 Claude Code                     \u2502\n\u2502                                              \u2502\n\u2502  ~/.agents/skills/resolve-greptile-comments  \u2502\n\u2502    universal: Codex                          \u2502\n\u2502    symlink \u2192 Claude Code                     \u2502\n\u2502                                              \u2502\n\u2502  ~/.agents/skills/track-work                 \u2502\n\u2502    universal: Codex                          \u2502\n\u2502    symlink \u2192 Claude Code                     \u2502\n\u2502                                              \u2502\n\u251c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u256f\n\u2502\n\u25c7  Installation complete\n\n\u2502\n\u25c7  Installed 5 skills \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u256e\n\u2502                                                \u2502\n\u2502  \u2713 ~/.agents/skills/gh-pr-comments-all         \u2502\n\u2502    universal: Codex                            \u2502\n\u2502    symlinked: Claude Code                      \u2502\n\u2502  \u2713 ~/.agents/skills/markdown-write             \u2502\n\u2502    universal: Codex                            \u2502\n\u2502    symlinked: Claude Code                      \u2502\n\u2502  \u2713 ~/.agents/skills/question-socratically      \u2502\n\u2502    universal: Codex                            \u2502\n\u2502    symlinked: Claude Code                      \u2502\n\u2502  \u2713 ~/.agents/skills/resolve-greptile-comments  \u2502\n\u2502    universal: Codex                            \u2502\n\u2502    symlinked: Claude Code                      \u2502\n\u2502  \u2713 ~/.agents/skills/track-work                 \u2502\n\u2502    universal: Codex                            \u2502\n\u2502    symlinked: Claude Code                      \u2502\n\u2502                                                \u2502\n\u251c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u256f\n\n\u2502\n\u2514  Done!  Review skills before use; they run with full agent permissions.\n\n"
+        },
+        {
+          "argv": [
+            "git",
+            "init",
+            "-q",
+            "/home/vimkim/tmp/published-skills-check-cvb2md01/checkout"
+          ],
+          "exit": 0,
+          "output": ""
+        },
+        {
+          "argv": [
+            "/home/vimkim/.local/share/mise/installs/python/latest/bin/python3",
+            "-m",
+            "unittest",
+            "discover",
+            "-s",
+            "/home/vimkim/tmp/published-skills-check-cvb2md01/home/.agents/skills/markdown-write/tests",
+            "-v"
+          ],
+          "exit": 0,
+          "output": "test_accepts_supported_rendering_contract (test_check_copyparty_markdown.CheckerTests.test_accepts_supported_rendering_contract) ... ok\ntest_ignores_examples_inside_code (test_check_copyparty_markdown.CheckerTests.test_ignores_examples_inside_code) ... ok\ntest_rejects_broken_delimiters_mermaid_links_and_inline_svg (test_check_copyparty_markdown.CheckerTests.test_rejects_broken_delimiters_mermaid_links_and_inline_svg) ... ok\ntest_rejects_unsafe_external_svg (test_check_copyparty_markdown.CheckerTests.test_rejects_unsafe_external_svg) ... ok\n\n----------------------------------------------------------------------\nRan 4 tests in 0.005s\n\nOK\n"
+        },
+        {
+          "argv": [
+            "node",
+            "--check",
+            "/home/vimkim/tmp/published-skills-check-cvb2md01/home/.agents/skills/markdown-write/scripts/check_mermaid_blocks.mjs"
+          ],
+          "exit": 0,
+          "output": ""
+        },
+        {
+          "argv": [
+            "git",
+            "init",
+            "-q",
+            "/home/vimkim/tmp/published-skills-check-cvb2md01/peer"
+          ],
+          "exit": 0,
+          "output": ""
+        },
+        {
+          "argv": [
+            "just",
+            "--justfile",
+            "/home/vimkim/tmp/published-skills-check-cvb2md01/checkout/justfile",
+            "sync-dry-run",
+            "--config",
+            "/home/vimkim/tmp/published-skills-check-cvb2md01/consumer-sync.json"
+          ],
+          "exit": 2,
+          "output": "conflict: gh-pr-comments-all (untracked/manual installation or unverifiable older content)\nconflict: markdown-write (untracked/manual installation or unverifiable older content)\nconflict: question-socratically (untracked/manual installation or unverifiable older content)\nconflict: resolve-greptile-comments (untracked/manual installation or unverifiable older content)\nconflict: track-work (untracked/manual installation or unverifiable older content)\n'/home/vimkim/.local/share/mise/installs/python/latest/bin/python3' \"/home/vimkim/tmp/published-skills-check-cvb2md01/checkout/scripts/sync_skills.py\" --collection \"/home/vimkim/tmp/published-skills-check-cvb2md01/checkout\" --dry-run --config /home/vimkim/tmp/published-skills-check-cvb2md01/consumer-sync.json\nerror: recipe `sync-dry-run` failed on line 8 with exit code 2\n"
+        },
+        {
+          "argv": [
+            "just",
+            "--justfile",
+            "/home/vimkim/tmp/published-skills-check-cvb2md01/checkout/justfile",
+            "sync",
+            "--config",
+            "/home/vimkim/tmp/published-skills-check-cvb2md01/consumer-sync.json"
+          ],
+          "exit": 2,
+          "output": "conflict: gh-pr-comments-all (untracked/manual installation or unverifiable older content)\nconflict: markdown-write (untracked/manual installation or unverifiable older content)\nconflict: question-socratically (untracked/manual installation or unverifiable older content)\nconflict: resolve-greptile-comments (untracked/manual installation or unverifiable older content)\nconflict: track-work (untracked/manual installation or unverifiable older content)\n'/home/vimkim/.local/share/mise/installs/python/latest/bin/python3' \"/home/vimkim/tmp/published-skills-check-cvb2md01/checkout/scripts/sync_skills.py\" --collection \"/home/vimkim/tmp/published-skills-check-cvb2md01/checkout\" --config /home/vimkim/tmp/published-skills-check-cvb2md01/consumer-sync.json\nerror: recipe `sync` failed on line 5 with exit code 2\n"
+        }
+      ],
+      "passed": true,
+      "cli_version": "1.7.0",
+      "node_version": "v25.8.0",
+      "source_commit": "244f22763550e67e12f1f9ad3567682fd02c63d7",
+      "source_worktree_dirty": false,
+      "discovery_without_installation": true,
+      "resources_sha256_executable_bits": {
+        "gh-pr-comments-all": {
+          "SKILL.md": [
+            "file",
+            "cfae68a7afc55727a0724a7111a8664d7deb0a825ee8dcca854440ee13619efc",
+            0
+          ]
+        },
+        "markdown-write": {
+          "SKILL.md": [
+            "file",
+            "e516fa9fa1ab8679103f4a14d713c9978cc9e83ae91a864e35e3b3dda9ea4d19",
+            0
+          ],
+          "agents/openai.yaml": [
+            "file",
+            "5cf4e85b753d563d5cb0cfcef563ee56d67cde895596fa873cd91f3e4df55c7b",
+            0
+          ],
+          "scripts/check_copyparty_markdown.py": [
+            "file",
+            "7e35495d8d9c5987b9fb890ed26d7a084aee3c9572bed7eeac013959ec4b1d7d",
+            73
+          ],
+          "scripts/check_mermaid_blocks.mjs": [
+            "file",
+            "b4d6d94c3a2ca2e2ad537b799deb91a137fb041cc253df7101ab1447ce02992f",
+            73
+          ],
+          "tests/test_check_copyparty_markdown.py": [
+            "file",
+            "4cc6e3edb5807eacd0b316fd05777fea2f6b5c5cb075eeddd6d676dfbcca30f1",
+            0
+          ]
+        },
+        "question-socratically": {
+          "SKILL.md": [
+            "file",
+            "f4a7761b509e94aab549b5aab92f0fcd263c5d521ed190bd52c360272dbe79bf",
+            0
+          ]
+        },
+        "resolve-greptile-comments": {
+          "SKILL.md": [
+            "file",
+            "49324eb66cf59cce7bdd397390306b1d88d95c460c81ced086f19b2ea5cb666d",
+            0
+          ]
+        },
+        "track-work": {
+          "SKILL.md": [
+            "file",
+            "0cb7eac84526239914443be5d4f623ca1844af53cfccf449d9cedea0b3a78414",
+            0
+          ],
+          "agents/openai.yaml": [
+            "file",
+            "124a32391976e8ac7200f369457ea5ea3f9d82aae7d424fc261918b6373daf5f",
+            0
+          ]
+        }
+      },
+      "both_agents_verified": true,
+      "local_sync_transition": "protected conflict; installation and ownership unchanged"
+    }
+  ]
+}

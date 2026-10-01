@@ -22,7 +22,7 @@ branch revision, actual CLI invocation, version, and failed discovery for each.
 
 ## Local preparation
 
-The local rehearsal uses migrated skill content from
+The final local rehearsal ran from clean commit `244f227`, using migrated skill content from
 `8a2fe861b7cba354684eb3e3095f1ad83961af24` and an inspected real CLI executable.
 The evidence records the checkout HEAD and whether the worktree was dirty at
 check time; the resource hashes identify the exact tested bytes independently.
@@ -41,6 +41,8 @@ The rehearsal passed:
   preserving all installations and ownership. This is the expected safe result
   for direct local-path installation, for which skills 1.7.0 writes no global
   ownership record.
+
+The repository public-command suite also passed all **27 tests** (`just test`).
 
 [Local evidence](ticket-6-local.json) records every invoked command, outcome,
 resource SHA-256 and executable bits. **This is not GitHub-source transition
