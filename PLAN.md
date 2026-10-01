@@ -21,7 +21,7 @@ Start with a short `/grill-with-docs` session to resolve the decisions below. Th
 
 If implementation fits one session, proceed to `/implement` after the decisions are recorded. If it will span sessions or separate repository changes, use `/to-tickets` and implement in dependency order. Tickets produced from the spec do not need triage. Configure the Matt workflow's tracker and document layout through `/setup-matt-pocock-skills` before starting that engineering flow.
 
-This turn uses `/ask-matt` for routing; the interview and later engineering skills have not been run.
+The `/grill-with-docs` interview is in progress. Round 1 resolved source ownership, migration scope, and daily refresh behavior; implementation has not begun.
 
 ## Proposed repository contract
 
@@ -75,7 +75,7 @@ Validate recipe parsing, dry-run behavior, and migration behavior in a disposabl
 
 ## Migration candidates
 
-These are candidates from the existing tree, not an approved move list or a completed dependency audit.
+The user approved the first five skills below for migration. The dependency audit remains implementation work; daily-schedule and my-cubrid-skills-create stay in the CUBRID collection for this batch.
 
 | Candidate | Initial assessment |
 | --- | --- |
@@ -97,14 +97,14 @@ Before automating sync, establish ownership across both collections so migration
 
 The adopted sync contract includes pruning during sync; it supersedes the earlier proposal that collection pruning occurs only through `daily-update --prune`. A dry run must show what collection sync would remove. Specify recoverability and failure behavior in the implementation spec; the current helper does not provide the dated-trash mechanism used by daily-update's existing prune path.
 
-Locate the version-controlled source of the deployed daily-update script before editing it; the deployed directory itself did not resolve as a Git worktree during inspection. Decide separately whether daily-update refreshes source checkouts before syncing; sync itself currently does not pull Git changes.
+Locate the version-controlled source of the deployed daily-update script before editing it; the deployed directory itself did not resolve as a Git worktree during inspection. The user approved daily-update fast-forwarding clean source checkouts before sync. Dirty or diverged checkouts are reported and skipped without modification. The collection sync command itself does not pull Git changes.
 
 ## Decisions for the interview
 
 1. Resolved: write the plan and create a public GitHub repository. This does not expand this turn into skill migration or daily-update implementation.
-2. Does “backup” mean this repository becomes the editable source of truth, as proposed, or mirrors skills authored elsewhere?
-3. Which migration candidates belong in the first batch? Recommendation: the five general-purpose candidates above; defer `daily-schedule`.
-4. Resolved: support GitHub URL installation and reuse the collection-only `sync` interface. Proposed host integration: daily-update calls local `just sync`. Should it also refresh clean source checkouts first?
+2. Resolved: my-skills is the authoritative editable source for migrated skills. GitHub is the remote backup; installed copies are generated. Each skill belongs to one collection.
+3. Resolved: migrate gh-pr-comments-all, resolve-greptile-comments, markdown-write, question-socratically, and track-work. Defer daily-schedule.
+4. Resolved: support GitHub URL installation and reuse the collection-only sync interface. Daily-update fast-forwards clean checkouts, then calls local just sync. Report and skip dirty or diverged checkouts.
 5. Resolve migration ownership and recovery for sync pruning before enabling automated runs. The interface now includes pruning as part of sync.
 
 ## Implementation slices

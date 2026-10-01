@@ -16,3 +16,6 @@ _Avoid_: Install/reinstall when referring to the complete reconciliation.
 
 **Migration**:
 Transfer of a skill from one collection to another while preserving its availability to users.
+
+**Source collection**:
+The single authoritative collection where a skill is maintained. After migration, the destination becomes that skill’s source collection.
