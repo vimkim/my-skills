@@ -238,9 +238,9 @@ def write_json(path, data):
     os.replace(temporary, path)
 
 
-def promote(names, stage_paths, paths, new_state, new_lock):
+def promote(names, stage_paths, paths, new_state, new_lock, removals=()):
     """Rollback all targeted files and ownership metadata on ordinary I/O failure."""
-    targets = [paths[key] / name for name in names for key in ('store', 'claude')]
+    targets = [paths[key] / name for name in [*names, *removals] for key in ('store', 'claude')]
     targets += [paths['state'], paths['lock']]
     with tempfile.TemporaryDirectory(prefix='skill-sync-rollback-') as temporary:
         backup = Path(temporary)
@@ -259,6 +259,9 @@ def promote(names, stage_paths, paths, new_state, new_lock):
                     else:
                         target.parent.mkdir(parents=True, exist_ok=True)
                         target.symlink_to(os.path.relpath(paths['store'] / name, target.parent))
+            for name in removals:
+                for key in ('claude', 'store'):
+                    remove_path(paths[key] / name)
             write_json(paths['state'], new_state)
             if new_lock is not None:
                 write_json(paths['lock'], new_lock)
@@ -270,11 +273,130 @@ def promote(names, stage_paths, paths, new_state, new_lock):
             raise
 
 
-def run_sync(args):
-    root = args.collection.resolve()
-    cfg = config_for(root, args.config)
-    skills = scan_collection(root, cfg)
-    paths = paths_for(Path.home())
+APPROVED_MIGRATIONS = frozenset({
+    'gh-pr-comments-all', 'resolve-greptile-comments', 'markdown-write',
+    'question-socratically', 'track-work'})
+
+
+def peer_evidence(root, cfg):
+    """An unavailable peer is unknown evidence, never an empty collection."""
+    peers, errors = {}, []
+    for owner, location in cfg['collections'].items():
+        if owner == cfg['collection']:
+            continue
+        try:
+            if not isinstance(location, str):
+                raise SyncError('collection path must be a string')
+            path = (root / location).resolve()
+            peer_cfg = config_for(path)
+            if peer_cfg['collection'] != owner:
+                raise SyncError(f'collection identity mismatch: {path}')
+            peers[owner] = (path, scan_collection(path, peer_cfg))
+        except (SyncError, OSError) as exc:
+            errors.append(f'{owner}: {exc}')
+    return peers, errors
+
+
+def approved_transfer(name, cfg):
+    migrations = cfg.get('migrations', [])
+    if not isinstance(migrations, list):
+        raise SyncError('malformed migration configuration')
+    for entry in migrations:
+        if (not isinstance(entry, dict) or set(entry) != {'name', 'from', 'to'}
+                or entry['name'] not in APPROVED_MIGRATIONS
+                or entry['from'] != 'vimkim/my-cubrid-skills'
+                or entry['to'] != 'vimkim/my-skills'):
+            raise SyncError('migration must name an approved old-to-new skill transfer')
+    return next((entry for entry in migrations if entry['name'] == name), None)
+
+
+def inspect_current(name, skill, cfg, root, paths, state, lock, peers):
+    transfer = approved_transfer(name, cfg)
+    record = state['skills'].get(name)
+    metadata = lock['skills'].get(name)
+    if transfer and cfg['collection'] == transfer['from']:
+        destination = peers.get(transfer['to'])
+        if destination and name in destination[1]:
+            return 'preserve', 'destination supplies approved migration; sync destination to transfer'
+    action, reason = inspect_skill(name, skill, cfg, root, paths, state, lock)
+    if not transfer or cfg['collection'] != transfer['to'] or transfer['from'] not in peers:
+        return action, reason
+    previous_root, previous_skills = peers[transfer['from']]
+    previous_cfg = {'collection': transfer['from']}
+    owner = lock_owner(metadata, previous_cfg, previous_root) if metadata else None
+    if metadata and owner != transfer['from']:
+        return action, reason
+    if record and record['owner'] != transfer['from']:
+        return action, reason
+    if not record and owner != transfer['from']:
+        return action, reason
+    try:
+        existing = installation_digest(name, paths)
+    except (SyncError, OSError) as exc:
+        return 'conflict', str(exc)
+    expected = record['digest'] if record else previous_skills.get(name, skill)['digest']
+    if existing != expected:
+        return 'conflict', 'migration cannot verify unedited previous installation'
+    return 'transfer', f"verified ownership from {transfer['from']}"
+
+
+def prune_plan(root, cfg, skills, paths, state, lock, peers, errors):
+    removals, conflicts = [], []
+    for name, record in sorted(state['skills'].items()):
+        if record['owner'] != cfg['collection'] or name in skills:
+            continue
+        reason = ''
+        if errors:
+            reason = 'incomplete collection evidence'
+        elif any(name in peer_skills for _, peer_skills in peers.values()):
+            print(f'preserve: {name} (supplied by another configured collection)')
+            continue
+        elif any(os.path.lexists(peer_root / config_for(peer_root).get('skill_root', 'skills') / name)
+                 for peer_root, _ in peers.values()):
+            reason = 'incomplete peer source directory remains'
+        elif os.path.lexists(root / cfg.get('skill_root', 'skills') / name):
+            reason = 'incomplete source directory remains'
+        else:
+            metadata = lock['skills'].get(name)
+            if metadata is not None and lock_owner(metadata, cfg, root) != cfg['collection']:
+                reason = 'installer metadata belongs to another or unknown source'
+            else:
+                try:
+                    if installation_digest(name, paths) != record['digest']:
+                        reason = 'installed files were edited or are missing'
+                except (SyncError, OSError) as exc:
+                    reason = str(exc)
+        if reason:
+            print(f'conflict: {name} ({reason}; removal skipped)')
+            conflicts.append(name)
+        else:
+            print(f'remove: {name} (verified obsolete owned installation)')
+            removals.append(name)
+    return removals, conflicts
+
+
+def recovery_snapshot(names, paths, state, lock):
+    parent = paths['state'].parent / 'recovery'
+    if any(p.is_symlink() for p in [parent, *parent.parents]):
+        raise SyncError(f'unsafe symlink in recovery path: {parent}')
+    parent.mkdir(parents=True, exist_ok=True)
+    folder = Path(tempfile.mkdtemp(prefix='removed-', dir=parent))
+    try:
+        records = {}
+        for name in names:
+            copy_path(paths['store'] / name, folder / 'skills' / name)
+            if digest_tree(folder / 'skills' / name) != state['skills'][name]['digest']:
+                raise SyncError(f'recovery verification failed: {name}')
+            records[name] = {'state': state['skills'][name], 'lock': lock['skills'].get(name)}
+        write_json(folder / 'manifest.json', {'version': 1, 'skills': records})
+    except BaseException:
+        shutil.rmtree(folder)
+        raise
+    print(f'recovery: {folder}')
+    return folder
+
+
+def read_managed_state(paths):
     for path in paths.values():
         if any(parent.is_symlink() for parent in [path, *path.parents]):
             raise SyncError(f'unsafe symlink in managed path: {path}')
@@ -283,44 +405,95 @@ def run_sync(args):
     lock = load_json(paths['lock'], {'version': 3, 'skills': {}})
     if lock.get('version') != 3 or not isinstance(lock.get('skills'), dict) or not all(isinstance(v, dict) for v in lock['skills'].values()):
         raise SyncError('malformed installer metadata')
-    eligible, conflicts = [], []
+    return state, lock
+
+
+def restore_snapshot(args):
+    paths = paths_for(Path.home())
+    state, lock = read_managed_state(paths)
+    folder = args.restore.resolve()
+    manifest = load_json(folder / 'manifest.json', {})
+    if manifest.get('version') != 1 or not isinstance(manifest.get('skills'), dict) or not manifest['skills']:
+        raise SyncError('malformed recovery manifest')
+    restored, updated_lock = copy.deepcopy(state), copy.deepcopy(lock)
+    for name, entry in manifest['skills'].items():
+        if not isinstance(entry, dict) or set(entry) != {'state', 'lock'}:
+            raise SyncError('malformed recovery entry')
+        validate_state({'version': 1, 'skills': {name: entry['state']}})
+        if entry['lock'] is not None and not isinstance(entry['lock'], dict):
+            raise SyncError('malformed recovery installer metadata')
+        if (name in state['skills'] or name in lock['skills']
+                or any(os.path.lexists(paths[key] / name) for key in ('store', 'claude', 'codex_legacy'))):
+            raise SyncError(f'restore conflict: {name} already has installed files or ownership')
+        if digest_tree(folder / 'skills' / name) != entry['state']['digest']:
+            raise SyncError(f'recovery content changed: {name}')
+        restored['skills'][name] = entry['state']
+        if entry['lock'] is not None:
+            updated_lock['skills'][name] = entry['lock']
+        print(f'restore: {name}')
+    if not args.dry_run:
+        promote(list(manifest['skills']), {'store': folder / 'skills'}, paths, restored,
+                updated_lock if updated_lock != lock else None)
+    return 0
+
+
+def run_sync(args):
+    if args.restore:
+        return restore_snapshot(args)
+    root = args.collection.resolve()
+    cfg = config_for(root, args.config)
+    approved_transfer('', cfg)  # Validate the complete transfer policy before any mutation.
+    skills = scan_collection(root, cfg)
+    paths = paths_for(Path.home())
+    state, lock = read_managed_state(paths)
+    peers, errors = peer_evidence(root, cfg)
+    for error in errors:
+        print(f'skipped peer evidence: {error}')
+    eligible, conflicts, observations = [], [], {}
     for name, skill in skills.items():
-        action, reason = inspect_skill(name, skill, cfg, root, paths, state, lock)
+        action, reason = inspect_current(name, skill, cfg, root, paths, state, lock, peers)
+        observations[name] = (action, reason)
         print(f'{action}: {name}' + (f' ({reason})' if reason else ''))
         if action == 'conflict':
             conflicts.append(name)
-        elif action != 'unchanged':
+        elif action not in ('unchanged', 'preserve'):
             eligible.append(name)
-    for name, record in state['skills'].items():
-        if record['owner'] == cfg['collection'] and name not in skills:
-            print(f'deferred stale: {name} (automatic removal is not enabled)')
+    removals, prune_conflicts = prune_plan(root, cfg, skills, paths, state, lock, peers, errors)
+    if conflicts and removals:
+        print('skipped removals: current installation conflicts prevent collection pruning')
+        removals = []
+    conflicts.extend(prune_conflicts)
     if not skills:
         print('empty collection: no current skills')
-    if args.dry_run or not eligible:
-        return 2 if conflicts else 0
-    # All installer writes happen in a disposable home. A partial CLI failure cannot
-    # overwrite live files or lock records, and verification precedes promotion.
+    result = 2 if conflicts or errors else 0
+    if args.dry_run or not (eligible or removals):
+        return result
     with tempfile.TemporaryDirectory(prefix='skill-sync-stage-') as temporary:
-        staged = stage_install(root, eligible, skills, Path(temporary))
-        # Recheck inputs after the external command, including complete source evidence.
-        if scan_collection(root, cfg) != skills:
-            raise SyncError('source changed during installation; retry')
-        if load_json(paths['state'], {'version': 1, 'skills': {}}) != state or load_json(paths['lock'], {'version': 3, 'skills': {}}) != lock:
+        staged = stage_install(root, eligible, skills, Path(temporary)) if eligible else {}
+        if scan_collection(root, cfg) != skills or peer_evidence(root, cfg) != (peers, errors):
+            raise SyncError('source evidence changed during installation; retry')
+        if read_managed_state(paths) != (state, lock):
             raise SyncError('ownership metadata changed during installation; retry')
-        for name in eligible:
-            action, _ = inspect_skill(name, skills[name], cfg, root, paths, state, lock)
-            if action == 'conflict':
+        # Reverify unchanged current installations too before authorizing pruning.
+        for name in skills:
+            if inspect_current(name, skills[name], cfg, root, paths, state, lock, peers) != observations[name]:
                 raise SyncError(f'installation changed during sync: {name}')
-        updated = copy.deepcopy(state)
+        checked_removals, _ = prune_plan(root, cfg, skills, paths, state, lock, peers, errors)
+        if any(action == 'conflict' for action, _ in observations.values()):
+            checked_removals = []
+        if checked_removals != removals:
+            raise SyncError('removal evidence changed during installation; retry')
+        updated, updated_lock = copy.deepcopy(state), copy.deepcopy(lock)
         for name in eligible:
             updated['skills'][name] = {'owner': cfg['collection'], 'digest': skills[name]['digest'], 'source': str(skills[name]['path'])}
-        # Local CLI does not emit lock records. Remove superseded matching GitHub
-        # entries only after verification; shared baseline now records ownership.
-        updated_lock = copy.deepcopy(lock)
-        for name in eligible:
             updated_lock['skills'].pop(name, None)
-        promote(eligible, staged, paths, updated, updated_lock if updated_lock != lock else None)
-    return 2 if conflicts else 0
+        if removals:
+            recovery_snapshot(removals, paths, state, lock)
+        for name in removals:
+            updated['skills'].pop(name)
+            updated_lock['skills'].pop(name, None)
+        promote(eligible, staged, paths, updated, updated_lock if updated_lock != lock else None, removals)
+    return result
 
 
 def main():
@@ -328,6 +501,7 @@ def main():
     parser.add_argument('--collection', type=Path, default=Path(__file__).resolve().parents[1])
     parser.add_argument('--config', type=Path)
     parser.add_argument('--dry-run', action='store_true')
+    parser.add_argument('--restore', type=Path, help='restore a reported recovery directory without overwriting any skill')
     args = parser.parse_args()
     try:
         # An advisory lock on the existing home directory serializes cooperating

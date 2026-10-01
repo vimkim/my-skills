@@ -17,7 +17,7 @@ python3 tests/real_smoke.py
 
 `sync` reconciles current checkout contents. It does **not** fetch or pull Git changes. Refresh your checkout separately. `sync-dry-run` describes additions, updates, unchanged skills, conflicts and stale candidates without modifying the checkout, installed skills, ownership or recovery files. `list` shows globally installed skills for Claude Code and Codex, including other collections; it can populate npm's cache but does not install skills. Discover this checkout separately with `npx --yes skills@1.7.0 add . --list`. `remove` explicitly invokes the installer's global removal for the named skill and both agents, regardless of collection ownership; it is not automatic reconciliation and does not provide recovery. The next sync can recreate a removed current skill. There is no third-party update recipe.
 
-Exit status is **0** for complete success (including an empty collection), **2** for conflicts/skipped skills with any independent eligible work completed, and **1** for configuration, scan, installer or verification errors. `just` propagates these statuses. Automatic stale removal is deferred to ticket #3; this slice reports candidates and preserves them.
+Exit status is **0** for complete success (including an empty collection), **2** for conflicts/skipped skills with any independent eligible work completed, and **1** for configuration, scan, installer or verification errors. `just` propagates these statuses. Unknown peer evidence and skipped removals are visible failures, even when independent installation work succeeds.
 
 ## Ownership and conflicts
 
@@ -29,7 +29,7 @@ The CLI's global metadata lives at `~/.agents/.skill-lock.json`. **skills 1.7.0 
 
 Existing local installs lacking both a verified sync baseline and installer ownership evidence are protected as manual installations, **even if their bytes equal this checkout**. A matching local-source or GitHub-source installer record may bootstrap ownership only when both agent layouts and every installed byte already match the current source. An older/different GitHub copy cannot establish that local edits are absent and is skipped. Successful transition to local collection sync removes only that skill's superseded installer record; unrelated metadata remains intact.
 
-Resolve ordinary conflicts by reviewing the installed copy, saving its edits into the authoritative source where appropriate, and preserving a separate backup. When deliberately replacing a legacy/manual installation, explicitly remove it with the installer after that review, then run sync. Do not fabricate ownership records or delete evidence merely to bypass protection. Cross-collection ownership transfers require the explicit migration support in the following ticket.
+Resolve ordinary conflicts by reviewing the installed copy, saving its edits into the authoritative source where appropriate, and preserving a separate backup. When deliberately replacing a legacy/manual installation, explicitly remove it with the installer after that review, then run sync. Do not fabricate ownership records or delete evidence merely to bypass protection. The five approved transfers are recorded explicitly in both collection configurations; arbitrary same-name collisions remain conflicts.
 
 ## Installation and failure behavior
 
@@ -38,3 +38,22 @@ Sync invokes the existing CLI with subprocess argument lists in a disposable hom
 `SKILLS_SYNC_INSTALLER` is an optional JSON argument list for an inspected installer executable or a deterministic test substitute; it is never shell-evaluated. Tests exercise `just sync` and `just sync-dry-run` with temporary Git repositories and disposable homes/caches. `tests/real_smoke.py` exercises first installation, updates, resources, both agents and repeat idempotence with the real pinned CLI. It downloads only into a disposable npm cache by default; `SKILLS_REAL_INSTALLER='["node","/absolute/path/to/skills/bin/cli.mjs"]'` reuses an already inspected installer without modifying its installation.
 
 Public default-branch GitHub URL and shorthand installation will be verified after the approved migration is published (ticket #6). Local smoke checks are not evidence of that publication gate.
+
+## Obsolete skills, migration and recovery
+
+Both personal checkouts are listed in `collection-sync.json`. Paths resolve from the invoking checkout; the shipped configuration expects sibling `my-skills` and `my-cubrid-skills` directories. Topic worktrees or different layouts can pass `just sync --config /absolute/path/config.json` with the same identities and correct absolute peer paths. Every configured peer must scan successfully before pruning. A missing peer, wrong identity, incomplete source directory, unreadable content or malformed evidence protects stale installations; independent eligible additions and updates can still succeed with exit 2. Intentionally empty collections retain their skill container.
+
+Sync identifies obsolete names only from successful ownership records, verifies current installation work first, then removes unchanged obsolete owned copies that no other configured collection supplies. Edited, manual and third-party skills are protected. Any current installation conflict suppresses all pruning for that collection, while independent installation work can proceed. Any installer or verification error prevents all promotion and pruning. Deletion means removing the whole source skill directory; a remaining directory without `SKILL.md` is incomplete evidence.
+
+The approved migration policy names `gh-pr-comments-all`, `resolve-greptile-comments`, `markdown-write`, `question-socratically` and `track-work`, from `vimkim/my-cubrid-skills` to `vimkim/my-skills`. The destination verifies the previous state fingerprint (or existing old-source installer metadata and matching source bytes), installs and verifies its new content, then changes ownership. Untracked legacy copies still require the conflict review above. When the former source runs first and the destination already supplies the name, it preserves the installation. After transfer the former source cannot prune it, even if its checkout still contains the old source. This ordering permits destination verification before deleting original source files.
+
+Before pruning, sync verifies a content backup and writes a manifest with ownership and the skill's installer metadata under `~/.local/state/skill-collections/recovery/removed-*` (or the configured `XDG_STATE_HOME`). It prints `recovery: /absolute/path`. Restore the reported directory with:
+
+```sh
+just sync-dry-run --restore /absolute/path/to/recovery/removed-XXXX
+just sync --restore /absolute/path/to/recovery/removed-XXXX
+```
+
+Restore checks fingerprints, refuses to overwrite any existing installation or ownership, recreates the Claude link, and restores the saved state and metadata. Recovery copies remain available afterward. Restore the corresponding source directory before the next normal sync to avoid intentionally pruning it again. Explicit `just remove` is a separate installer operation and has no recovery snapshot.
+
+The old collection vendors an identical copy of `scripts/sync_skills.py` at `tools/sync_skills.py`, so it can synchronize without importing unpublished code from another checkout. This repository is the authoritative engine source: update both copies together and verify the old entry point with `python3 tests/check_vendored_sync.py /path/to/my-cubrid-skills`. The check reads real source metadata but confines all installation/removal/recovery work to temporary checkouts and homes. The public-command suite covers both processing orders, all five names, local/GitHub metadata transitions, failures, conflicts, and actual restoration.

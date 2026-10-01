@@ -75,7 +75,7 @@ class SyncCommands(unittest.TestCase):
         self.assertEqual((self.installed() / 'resources/data.txt').read_text(), 'Changed')
         self.assertTrue(self.installed('beta').is_dir())
 
-    def test_dry_run_and_empty_and_deferred(self):
+    def test_dry_run_and_empty_and_removal(self):
         self.assertIn('empty collection', self.run_sync(dry=True))
         self.skill()
         before = self.snapshot()
@@ -84,10 +84,10 @@ class SyncCommands(unittest.TestCase):
         self.run_sync()
         shutil.rmtree(self.root / 'skills/alpha')
         before = self.snapshot()
-        self.assertIn('deferred stale: alpha', self.run_sync(dry=True))
+        self.assertIn('remove: alpha', self.run_sync(dry=True))
         self.assertEqual(before, self.snapshot())
         self.run_sync()
-        self.assertTrue(self.installed().is_dir())
+        self.assertFalse(self.installed().exists())
 
     def test_edited_and_independent(self):
         self.skill()
