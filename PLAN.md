@@ -8,7 +8,7 @@ Use `/home/vimkim/gh/my-skills` as the Git-backed home and backup for personal s
 
 ## Existing behavior inspected
 
-- The destination directory was empty and had no Git repository. A local `main` baseline and a documentation worktree were created for this plan. GitHub lookup could not resolve `vimkim/my-skills`; creation and visibility remain pending.
+- The destination directory was empty and had no Git repository. A local `main` baseline and a documentation worktree were created for this plan. The user selected a public repository, and `https://github.com/vimkim/my-skills` was created. The plan is published on its review branch; implementation remains pending.
 - `my-cubrid-skills/AGENTS.md` treats its repository as the source of truth and installed copies as generated artifacts. Its `justfile` installs from the local path with `npx skills add . -y -g --agent claude-code --agent codex`.
 - `/home/vimkim/.config/my-scripts/bin/daily-update` runs global skills updates. Its `PERSONAL_REPO` points only to `my-cubrid-skills`; it does not explicitly reinstall that local collection.
 - Its stale detection uses the global skills lock and protects names found in the personal collection. Local-path installs are described by the script as absent from that lock. This assumption needs a disposable-environment check before implementation.
@@ -62,7 +62,7 @@ The exact manifest format and installer adapter belong in the spec after checkin
 
 ## Decisions for the interview
 
-1. Is this turn planning only, or should it also create the GitHub repository? If creating it, public or private?
+1. Resolved: write the plan and create a public GitHub repository. This does not expand this turn into skill migration or daily-update implementation.
 2. Does “backup” mean this repository becomes the editable source of truth, as proposed, or mirrors skills authored elsewhere?
 3. Which migration candidates belong in the first batch? Recommendation: the five general-purpose candidates above; defer `daily-schedule`.
 4. Should daily updates install from the local checkout, or fetch the published branch first? Recommendation: follow the local collection model initially and make remote refresh policy explicit; never discard local changes.
