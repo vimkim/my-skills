@@ -76,6 +76,14 @@ python3 tests/real_smoke.py
 
 `sync` reconciles current checkout contents. It does **not** fetch or pull Git changes. Refresh your checkout separately. `sync-dry-run` describes additions, updates, unchanged skills, conflicts and stale candidates without modifying the checkout, installed skills, ownership or recovery files. `list` shows globally installed skills for Claude Code and Codex, including other collections; it can populate npm's cache but does not install skills. Discover this checkout separately with `npx --yes skills@1.7.0 add . --list`. `remove` explicitly invokes the installer's global removal for the named skill and both agents, regardless of collection ownership; it is not automatic reconciliation and does not provide recovery. The next sync can recreate a removed current skill. There is no third-party update recipe.
 
+On the maintainer's host, the coordinated `daily-update` change in
+`vimkim/dotfiles` refreshes both clean personal checkouts before invoking their
+local `just sync`. It skips dirty, ahead or diverged checkouts and continues
+independently safe work after a failure. Its source, policy and verification are
+documented in that repository's `docs/daily-update.md`; deploying the updated
+Bash entry point requires separate authorization. See the
+[combined implementation review](docs/verification/spec-1-review.md).
+
 Exit status is **0** for complete success (including an empty collection), **2** for conflicts/skipped skills with any independent eligible work completed, and **1** for configuration, scan, installer or verification errors. `just` propagates these statuses. Unknown peer evidence and skipped removals are visible failures, even when independent installation work succeeds.
 
 ## Ownership and conflicts
