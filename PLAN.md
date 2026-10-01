@@ -1,6 +1,6 @@
 # Personal skills collection plan
 
-Status: interview complete; the user confirmed the consolidated understanding, including the Python implementation choice. This document records the agreed behavior and proposed implementation work; it is not yet an implementation spec.
+Status: interview complete; the user confirmed the consolidated understanding, including the Python implementation choice. This document records the design interview. The resulting implementation specification is published as [GitHub issue #1](https://github.com/vimkim/my-skills/issues/1), with a local publication copy in SPEC.md. Use that issue for implementation planning.
 
 ## Requested outcome
 
@@ -17,7 +17,7 @@ Use `/home/vimkim/gh/my-skills` as the Git-backed home and backup for personal s
 
 ## Recommended workflow
 
-The `/grill-with-docs` session is complete. The engineering workflow is configured for GitHub Issues in vimkim/my-skills, the five standard triage labels, and a single domain context. Next, use `/to-spec` to write a buildable contract. This is small enough to avoid `/wayfinder` and does not currently need a prototype.
+The `/grill-with-docs` session is complete. The engineering workflow is configured for GitHub Issues in vimkim/my-skills, the five standard triage labels, and a single domain context. The `/to-spec` workflow is complete: issue #1 contains the published specification, labeled ready-for-agent. The user confirmed the public-command testing boundary. This is small enough to avoid `/wayfinder` and does not currently need a prototype.
 
 If implementation fits one session, proceed to `/implement` after the decisions are recorded. If it will span sessions or separate repository changes, use `/to-tickets` and implement in dependency order. Tickets produced from the spec do not need triage. The tracker and document conventions are recorded in AGENTS.md and docs/agents/.
 
