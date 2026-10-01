@@ -1,6 +1,6 @@
 # Personal skills collection plan
 
-Status: interview decisions recorded, awaiting final shared-understanding confirmation. This document records the agreed behavior and proposed implementation work; it is not yet an implementation spec.
+Status: interview complete; the user confirmed the consolidated understanding, including the Python implementation choice. This document records the agreed behavior and proposed implementation work; it is not yet an implementation spec.
 
 ## Requested outcome
 
@@ -17,11 +17,11 @@ Use `/home/vimkim/gh/my-skills` as the Git-backed home and backup for personal s
 
 ## Recommended workflow
 
-Start with a short `/grill-with-docs` session to resolve the decisions below. Then use `/to-spec` to write a buildable contract. This is small enough to avoid `/wayfinder` and does not currently need a prototype.
+The `/grill-with-docs` session is complete. Next, configure the engineering workflow and use `/to-spec` to write a buildable contract. This is small enough to avoid `/wayfinder` and does not currently need a prototype.
 
 If implementation fits one session, proceed to `/implement` after the decisions are recorded. If it will span sessions or separate repository changes, use `/to-tickets` and implement in dependency order. Tickets produced from the spec do not need triage. Configure the Matt workflow's tracker and document layout through `/setup-matt-pocock-skills` before starting that engineering flow.
 
-The `/grill-with-docs` interview resolved source ownership, migration scope, daily refresh behavior, conflicts, recovery, and implementation language. Final shared-understanding confirmation is pending; implementation has not begun.
+The `/grill-with-docs` interview resolved source ownership, migration scope, daily refresh behavior, conflicts, recovery, and implementation language. The user confirmed shared understanding; implementation has not begun.
 
 ## Proposed repository contract
 
@@ -51,7 +51,7 @@ npx skills add vimkim/my-skills --skill '*' -g -a claude-code -a codex -y
 
 These are target commands for the completed collection. The repository currently contains no skills, so installation is not yet ready. Publish skills on the default branch before validating the plain repository URL.
 
-Keep GitHub URL installation available to consumers. On this host, use the collection’s local `just sync` interface as the proposed daily-update integration. Validate URL installation and local synchronization separately, including transitions between the two sources.
+Keep GitHub URL installation available to consumers. On this host, use the collection’s local `just sync` interface as the agreed daily-update integration. Validate URL installation and local synchronization separately, including transitions between the two sources.
 
 ## Reuse the revamped sync interface
 
@@ -117,10 +117,9 @@ Locate the version-controlled source of the deployed daily-update script before 
 4. Resolved: support GitHub URL installation and reuse the collection-only sync interface. Daily-update fast-forwards clean checkouts, then calls local just sync. Report and skip dirty or diverged checkouts.
 5. Resolved: report and skip directly edited installed skills or same-name conflicts with another collection. Resolve conflicts at the source before syncing again; explicitly transfer ownership for the five approved migrations.
 6. Resolved: verify new installations before pruning, keep recoverable copies of removed skills, and report failures. Continue syncing the other collection when one fails, subject to ownership protection.
-
 7. Resolved: implement synchronization in Python 3 using only the standard library; expose it through justfile and keep daily-update in Bash.
 
-All interview behavior and language decisions are answered. The user’s final confirmation of the consolidated understanding is pending. CLI behavior, metadata representation, and migration mechanics require implementation investigation and verification rather than additional preference questions.
+All interview behavior and language decisions are answered. The user confirmed the consolidated understanding. CLI behavior, metadata representation, and migration mechanics require implementation investigation and verification rather than additional preference questions.
 
 ## Implementation slices
 
