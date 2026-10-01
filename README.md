@@ -16,7 +16,52 @@ These skills retain their invocation names, original content and supporting reso
 
 `daily-schedule` and `my-cubrid-skills-create` remain in the CUBRID collection. The former invokes this collection's `track-work`; `gh-pr-comments-all` refers to `resolve-greptile-comments` by its unchanged invocation name. See [migration provenance, sequence and verification](docs/migration.md).
 
-## Requirements and commands
+## Install from GitHub
+
+**Publication status:** the migrated content is prepared locally. The plain public
+URL and shorthand checks remain blocked until the reviewed commits are published
+on the default branch with separate push authorization. These commands become
+usable for the five-skill collection after that publication; a branch install or
+local rehearsal does not establish the public default-branch check.
+
+Installation requires Git and Node **22.20+** with npm/npx. It does not require a
+pre-existing checkout, Python, or just. Individual skills have the runtime
+requirements in the table above; installing their files does not provision
+GitHub authentication, `work-tracker`, or the copyparty viewer.
+
+Discover without installing (either spelling works):
+
+```sh
+npx --yes skills@1.7.0 add https://github.com/vimkim/my-skills --list
+npx --yes skills@1.7.0 add vimkim/my-skills --list
+```
+
+Install the five skills globally for **Claude Code and Codex**, using either
+source form:
+
+```sh
+npx --yes skills@1.7.0 add https://github.com/vimkim/my-skills --global --skill '*' --agent claude-code codex --yes
+npx --yes skills@1.7.0 add vimkim/my-skills --global --skill '*' --agent claude-code codex --yes
+```
+
+Choose one install command. Replace `'*'` with a skill name to select a subset.
+The CLI writes the canonical Codex-compatible copies under `~/.agents/skills`
+and Claude Code links under `~/.claude/skills`. Full URL and shorthand refer to
+the same repository. See the [upstream CLI documentation](https://github.com/vercel-labs/skills#install-a-skill)
+for source formats and agent selection.
+
+Remote installation downloads published content. Local `just sync` reconciles a
+source checkout with the safety and ownership rules below; it does not fetch
+GitHub updates. When switching from GitHub installation to a local checkout,
+use `just sync-dry-run` first. Matching installer ownership and content can be
+adopted; uncertain or different content is a protected conflict. Review that
+conflict before choosing any replacement. Direct local-path CLI installs lack
+ownership metadata in version 1.7.0 and therefore remain protected.
+
+The repeatable isolated check is documented in
+[consumer verification evidence](docs/verification/ticket-6.md).
+
+## Local sync requirements and commands
 
 Linux, Python **3.12+**, Git, just, and Node **22.20+** with npm/npx are required. Python uses only its standard library; no virtual environment is needed. The installer is pinned to `skills@1.7.0`. Tests ran on Python 3.12 and 3.14.6; the real installer smoke used Node 25.8.0. Set `SKILLS_SYNC_PYTHON` to select a different Python executable.
 
