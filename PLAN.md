@@ -17,9 +17,9 @@ Use `/home/vimkim/gh/my-skills` as the Git-backed home and backup for personal s
 
 ## Recommended workflow
 
-The `/grill-with-docs` session is complete. Next, configure the engineering workflow and use `/to-spec` to write a buildable contract. This is small enough to avoid `/wayfinder` and does not currently need a prototype.
+The `/grill-with-docs` session is complete. The engineering workflow is configured for GitHub Issues in vimkim/my-skills, the five standard triage labels, and a single domain context. Next, use `/to-spec` to write a buildable contract. This is small enough to avoid `/wayfinder` and does not currently need a prototype.
 
-If implementation fits one session, proceed to `/implement` after the decisions are recorded. If it will span sessions or separate repository changes, use `/to-tickets` and implement in dependency order. Tickets produced from the spec do not need triage. Configure the Matt workflow's tracker and document layout through `/setup-matt-pocock-skills` before starting that engineering flow.
+If implementation fits one session, proceed to `/implement` after the decisions are recorded. If it will span sessions or separate repository changes, use `/to-tickets` and implement in dependency order. Tickets produced from the spec do not need triage. The tracker and document conventions are recorded in AGENTS.md and docs/agents/.
 
 The `/grill-with-docs` interview resolved source ownership, migration scope, daily refresh behavior, conflicts, recovery, and implementation language. The user confirmed shared understanding; implementation has not begun.
 
