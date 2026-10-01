@@ -1,0 +1,6 @@
+{
+  "version": 1,
+  "collection": "vimkim/my-skills",
+  "collections": {"vimkim/my-skills": "."},
+  "migrations": []
+}
