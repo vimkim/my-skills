@@ -41,8 +41,7 @@ def environment(base):
     env = {'PATH': os.environ['PATH'], 'LANG': 'C.UTF-8', 'CI': '1',
            'DO_NOT_TRACK': '1', 'DISABLE_TELEMETRY': '1', 'BROWSER': 'none',
            'GIT_CONFIG_NOSYSTEM': '1', 'GIT_CONFIG_GLOBAL': '/dev/null',
-           'GIT_TERMINAL_PROMPT': '0', 'npm_config_userconfig': '/dev/null',
-           'npm_config_globalconfig': '/dev/null', 'PYTHONDONTWRITEBYTECODE': '1',
+           'GIT_TERMINAL_PROMPT': '0', 'PYTHONDONTWRITEBYTECODE': '1',
            'SKILLS_SYNC_PYTHON': sys.executable}
     for key, relative in {'HOME': 'home', 'CODEX_HOME': 'home/.codex',
                           'CLAUDE_CONFIG_DIR': 'home/.claude',
@@ -53,6 +52,12 @@ def environment(base):
                           'npm_config_cache': 'home/.npm', 'TMPDIR': 'tmp'}.items():
         path = base / relative
         path.mkdir(parents=True, exist_ok=True)
+        env[key] = str(path)
+    # npm rejects using the same file for both configuration layers.
+    for key, filename in (('npm_config_userconfig', 'npm-user-config'),
+                          ('npm_config_globalconfig', 'npm-global-config')):
+        path = base / filename
+        path.touch()
         env[key] = str(path)
     return env
 
