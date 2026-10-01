@@ -26,11 +26,32 @@ This turn uses `/ask-matt` for routing; the interview and later engineering skil
 ## Proposed repository contract
 
 - `my-skills` becomes the authoritative editable source for migrated general-purpose skills; GitHub provides the remote backup.
-- Keep one top-level directory per skill, containing `SKILL.md` and its required scripts, references, and assets.
+- Use `skills/<name>/SKILL.md`, with supporting resources beside each skill, so the collection follows an explicitly documented discovery layout.
 - Add a README with an inventory and installation instructions, repository guidance describing the source/installed-copy distinction, and a `justfile` consistent with the existing collection.
 - Keep CUBRID-specific skills in `my-cubrid-skills`. Resolve generic skills' CUBRID dependencies before moving them.
 - Keep existing skill names where possible so invocations and dependent skills continue to work.
 - Ignore disposable generated outputs narrowly; track supporting resources needed for the skills to function.
+
+## GitHub URL installation requirement
+
+The user explicitly requires installation through the Vercel `skills` CLI by providing this repository's GitHub URL. The CLI documents full GitHub URLs, repository shorthand, discovery under `skills/`, and agent selection. See the [upstream README](https://github.com/vercel-labs/skills#readme), checked 2026-10-01.
+
+The published collection must support:
+
+```sh
+# Discover available skills without installing
+npx skills add https://github.com/vimkim/my-skills --list
+
+# Install all collection skills globally for the intended agents
+npx skills add https://github.com/vimkim/my-skills --skill '*' -g -a claude-code -a codex -y
+
+# Equivalent repository shorthand
+npx skills add vimkim/my-skills --skill '*' -g -a claude-code -a codex -y
+```
+
+These are target commands for the completed collection. The repository currently contains no skills, so installation is not yet ready. Publish skills on the default branch before validating the plain repository URL.
+
+Proposed default: use the GitHub source for normal installation and reserve local-path installation for development. Confirm the daily-update source policy during the interview. Prefer the CLI's existing source metadata and update behavior; add ownership state only for demonstrated gaps. Validate initial installation, discovery of newly added skills, updates to existing skills, and deleted-skill handling separately.
 
 ## Migration candidates
 
@@ -58,14 +79,14 @@ Compute current skill ownership across both collections before offering prune ca
 
 Only record a successful installation after verifying its result. Only propose a removed skill when the owning collection was successfully inspected and no configured collection currently supplies it. Preserve recoverable trash and metadata backups during pruning. Failed refreshes must retain the previous working installation and ownership state.
 
-The exact manifest format and installer adapter belong in the spec after checking actual CLI behavior. Locate the version-controlled source of the deployed `daily-update` script before editing it; the deployed directory itself did not resolve as a Git worktree during inspection.
+Whether additional ownership metadata is needed belongs in the spec after checking actual GitHub-source CLI behavior; do not assume a separate manifest is necessary. Locate the version-controlled source of the deployed `daily-update` script before editing it; the deployed directory itself did not resolve as a Git worktree during inspection.
 
 ## Decisions for the interview
 
 1. Resolved: write the plan and create a public GitHub repository. This does not expand this turn into skill migration or daily-update implementation.
 2. Does “backup” mean this repository becomes the editable source of truth, as proposed, or mirrors skills authored elsewhere?
 3. Which migration candidates belong in the first batch? Recommendation: the five general-purpose candidates above; defer `daily-schedule`.
-4. Should daily updates install from the local checkout, or fetch the published branch first? Recommendation: follow the local collection model initially and make remote refresh policy explicit; never discard local changes.
+4. Resolved: the collection must install through `npx skills add` using its GitHub URL. Should daily-update also use that GitHub source (recommended), or retain local-checkout installation for this host? Local development changes must remain preserved.
 5. Should pruning stay behind `daily-update --prune`, as proposed, or happen automatically on normal runs?
 
 ## Implementation slices
@@ -81,8 +102,8 @@ Each affected repository follows the user's topic-worktree workflow: scoped comm
 
 ## Acceptance checks for implementation
 
-- A fresh disposable home receives the intended skills and supporting resources for the configured agents.
-- A second update makes no unintended changes; modifying a source skill refreshes its installed copy.
+- In a fresh disposable home without a local checkout, the plain GitHub URL lists and installs every intended skill and supporting resource for the configured agents. Repository shorthand also works.
+- A second update makes no unintended changes; publishing a source change refreshes its installed copy. Newly published skills are discovered and installed according to the agreed collection policy.
 - A migrated skill remains installed through updates and pruning regardless of collection processing order.
 - Removing a managed source skill produces a stale report; explicit pruning moves the eligible installation into recoverable trash and updates ownership metadata.
 - Missing repositories, network failures, malformed state, incomplete scans, and failed installs do not cause removal or loss of the last working copy.
