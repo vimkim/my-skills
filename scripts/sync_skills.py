@@ -211,7 +211,37 @@ def stage_install(root, names, skills, stage):
     for name in names:
         if installation_digest(name, paths) != skills[name]['digest']:
             raise SyncError(f'installer verification failed for {name}')
+    warn_native_local_ownership(root, names, stage, env)
     return paths
+
+
+def warn_native_local_ownership(root, names, stage, env):
+    # Inspect actual installer output, not a guessed release number. The staged
+    # home is disposable, so these records were created by this invocation.
+    candidates = [Path(env['XDG_STATE_HOME']) / 'skills/.skill-lock.json',
+                  stage / '.agents/.skill-lock.json']
+    for path in candidates:
+        try:
+            lock = load_json(path, {})
+        except SyncError:
+            continue  # Optional capability evidence does not change sync policy.
+        entries = lock.get('skills')
+        if not names or not isinstance(entries, dict):
+            continue
+        for name in names:
+            entry = entries.get(name)
+            if not isinstance(entry, dict) or entry.get('sourceType') != 'local':
+                break
+            source = entry.get('sourceUrl') or entry.get('source')
+            if not isinstance(source, str) or not Path(source).is_absolute() or Path(source).resolve() != root.resolve():
+                break
+        else:
+            print('warning: the installer now records local-source ownership automatically; '
+                  'the manual ownership-bootstrap workaround is deprecated for this installer. '
+                  'Use its normal skills add <local-path> --global for new direct installs. '
+                  'Collection sync still maintains edit protection, migrations and recoverable pruning; '
+                  'existing conflicts still require review.', file=sys.stderr)
+            return
 
 
 def remove_path(path):

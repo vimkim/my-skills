@@ -1,4 +1,5 @@
 """Controlled CLI substitute, invoked as an external process in disposable HOME."""
+import json
 import os
 from pathlib import Path
 import shutil
@@ -24,3 +25,13 @@ for name in names:
         (destination / 'SKILL.md').write_text('corrupt output')
     if os.environ.get('TEST_INSTALLER_FAILURE') == 'link':
         link.unlink()
+
+lock_mode = os.environ.get('TEST_INSTALLER_LOCAL_LOCK')
+if lock_mode:
+    lock_path = (Path(os.environ['XDG_STATE_HOME']) / 'skills/.skill-lock.json'
+                 if lock_mode == 'xdg' else home / '.agents/.skill-lock.json')
+    source = str(root if lock_mode != 'wrong-source' else root / 'other')
+    lock_path.parent.mkdir(parents=True, exist_ok=True)
+    lock_path.write_text(json.dumps({'version': 3, 'skills': {
+        name: {'sourceType': 'local', 'source': source, 'sourceUrl': source}
+        for name in names}}))

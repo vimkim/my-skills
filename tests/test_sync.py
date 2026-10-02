@@ -89,6 +89,22 @@ class SyncCommands(unittest.TestCase):
         self.run_sync()
         self.assertFalse(self.installed().exists())
 
+    def test_native_local_ownership_warning_uses_verified_installer_output(self):
+        self.skill()
+        for mode in ('legacy', 'xdg', 'wrong-source', ''):
+            with self.subTest(mode=mode):
+                self.env['TEST_INSTALLER_LOCAL_LOCK'] = mode
+                self.skill(body='Changed for ' + mode)
+                preview = self.run_sync(dry=True)
+                self.assertNotIn('deprecated', preview)
+                output = self.run_sync()
+                self.assertEqual('manual ownership-bootstrap workaround is deprecated' in output,
+                                 mode in ('legacy', 'xdg'))
+                self.assertEqual(json.loads(self.state.read_text())['skills']['alpha']['owner'],
+                                 'example/collection')
+        (self.installed() / 'resources/data.txt').write_text('Local edit')
+        self.assertIn('installed files were edited', self.run_sync(code=2))
+
     def test_edited_and_independent(self):
         self.skill()
         self.run_sync()

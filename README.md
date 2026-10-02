@@ -96,6 +96,24 @@ The CLI's global metadata lives at `~/.agents/.skill-lock.json`. **skills 1.7.0 
 
 Existing local installs lacking both a verified sync baseline and installer ownership evidence are protected as manual installations, **even if their bytes equal this checkout**. A matching local-source or GitHub-source installer record may bootstrap ownership only when both agent layouts and every installed byte already match the current source. An older/different GitHub copy cannot establish that local edits are absent and is skipped. Successful transition to local collection sync removes only that skill's superseded installer record; unrelated metadata remains intact.
 
+Upstream [PR #2301](https://github.com/vercel-labs/skills/pull/2301) adds automatic
+global ownership records for local-path installs. It is not in the pinned
+`skills@1.7.0`; see the [versioned research](docs/verification/local-install-ownership.md).
+When a configured installer writes matching local-source records during sync's
+verified staging installation, sync prints a deprecation warning for the manual
+ownership-bootstrap workaround. No enable flag or guessed version threshold is
+used. Detection checks both the staged XDG state lock and the legacy `.agents`
+lock. Dry runs and unchanged syncs do not invoke the installer, so they do not
+probe or warn about this capability. A future pin update or an explicit
+`SKILLS_SYNC_INSTALLER` override can activate detection.
+
+The warning does not retire collection sync or its state file: edit protection,
+approved migrations and recoverable pruning still depend on them. It does not
+alter existing conflicts, adopt unknown installations, or recommend removing
+existing files. For new direct installs with a fixed installer, normal
+`skills add <local-path> --global` records provenance automatically. Existing
+untracked or edited copies still need review.
+
 Resolve ordinary conflicts by reviewing the installed copy, saving its edits into the authoritative source where appropriate, and preserving a separate backup. When deliberately replacing a legacy/manual installation, explicitly remove it with the installer after that review, then run sync. Do not fabricate ownership records or delete evidence merely to bypass protection. The five approved transfers are recorded explicitly in both collection configurations; arbitrary same-name collisions remain conflicts.
 
 ## Installation and failure behavior
