@@ -20,7 +20,7 @@ import tempfile
 REPO = Path(__file__).resolve().parents[1]
 URL = 'https://github.com/vimkim/my-skills'
 NAMES = {'gh-pr-comments-all', 'resolve-greptile-comments', 'markdown-write',
-         'question-socratically', 'track-work'}
+         'question-socratically', 'track-work', 'serve-html'}
 ANSI = re.compile(r'\x1b\[[0-?]*[ -/]*[@-~]')
 
 
@@ -115,7 +115,7 @@ def verify(case, source, local):
                    'claude-code', 'codex', '--yes'])
         canonical = home / '.agents/skills'
         if not canonical.is_dir() or {p.name for p in canonical.iterdir()} != NAMES:
-            raise AssertionError('Installed collection must contain exactly the five intended skills')
+            raise AssertionError('Installed collection must contain exactly the intended skills')
 
         # Obtain an independent source baseline only AFTER URL/shorthand install.
         checkout = base / 'checkout'
@@ -129,7 +129,7 @@ def verify(case, source, local):
             if commit.strip() != case['source_commit'] or remote_after.split()[0] != case['source_commit']:
                 raise AssertionError('Published default branch advanced during validation; retry')
         if {p.name for p in (checkout / 'skills').iterdir() if p.is_dir()} != NAMES:
-            raise AssertionError('Source collection must contain exactly the five intended skills')
+            raise AssertionError('Source collection must contain exactly the intended skills')
         evidence = {}
         for name in sorted(NAMES):
             expected = resources(checkout / 'skills' / name)

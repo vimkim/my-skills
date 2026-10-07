@@ -11,6 +11,7 @@ This repository is a **source collection**: edit skills here. Installed skills a
 | `markdown-write` | Write and validate copyparty-compatible Markdown | Python 3; Node/npm and `jsdom` for Mermaid; configured viewer and its vendored Mermaid bundle for rendering checks |
 | `question-socratically` | One-question-at-a-time Socratic dialogue | No external command |
 | `track-work` | Maintain durable work status and history | `work-tracker` CLI and configured ledger |
+| `serve-html` | Generate an HTML serving command and clickable VPN/LAN URLs; stop with Ctrl+C | Linux, Python 3, and `ip` (iproute2) |
 
 These skills retain their invocation names, original content and supporting resources. `markdown-write` includes two executable validators, its regression tests and agent metadata; `track-work` includes agent metadata. The Mermaid validator resolves its bundle from the target document tree or `MERMAID_BUNDLE`, and may install `jsdom` into `~/.cache/markdown-write-skill`. It does not bundle the viewer or dependencies. Install `work-tracker` from its source repository with `just install` when unavailable; the skill uses the executable on `PATH` and its configured ledger.
 
@@ -36,7 +37,7 @@ npx --yes skills@1.7.0 add https://github.com/vimkim/my-skills --list
 npx --yes skills@1.7.0 add vimkim/my-skills --list
 ```
 
-Install the five skills globally for **Claude Code and Codex**, using either
+Install all skills globally for **Claude Code and Codex**, using either
 source form:
 
 ```sh
