@@ -5,12 +5,17 @@ description: Suggest the serve-html CLI command after creating an HTML file on a
 
 # Serve HTML
 
-After creating an HTML file, suggest one shell-quoted command using its absolute
-parent directory and filename:
+After creating an HTML file, expand `~/.config/my-scripts/bin/serve-html.py`
+to its absolute path on the server. Suggest one command with the script path,
+HTML file's absolute parent directory, and filename shell-quoted. Substitute
+the actual paths and filename for the example:
 
-```bash
-PYTHONDONTWRITEBYTECODE=1 python "$HOME/.config/my-scripts/bin/serve-html.py" --bind 0.0.0.0 --directory '/absolute/path/to/output' --file 'review.html'
+```sh
+python -B '/absolute/home/.config/my-scripts/bin/serve-html.py' --bind 0.0.0.0 --directory '/absolute/path/to/output' --file 'review.html'
 ```
+
+The absolute paths and `-B` flag keep the command compatible with Bash and
+Nushell; `-B` disables Python bytecode cache writes.
 
 Tell the user to run it in their SSH terminal. The CLI starts the foreground
 server, chooses and holds a free port, prints Tailscale/VPN and LAN links, and
