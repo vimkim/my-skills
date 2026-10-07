@@ -7,15 +7,23 @@ This repository is a **source collection**: edit skills here. Installed skills a
 | Invocation name | Purpose | Additional requirements |
 |---|---|---|
 | `gh-pr-comments-all` | Fetch all three GitHub PR comment streams | Authenticated `gh`, `jq`, Bash and standard shell tools |
+| `handoff-implement-spec` | Prepare a handoff for one fresh implementation agent per ticket | Matt Pocock's `implement-spec`, `tdd`, and `code-review`, plus `track-work` and a receiving harness with independent agent contexts and worktrees |
 | `resolve-greptile-comments` | Resolve replied Greptile review threads | Authenticated `gh` with repository permissions, Bash and standard shell tools |
 | `markdown-write` | Write and validate copyparty-compatible Markdown | Python 3; Node/npm and `jsdom` for Mermaid; configured viewer and its vendored Mermaid bundle for rendering checks |
 | `question-socratically` | One-question-at-a-time Socratic dialogue | No external command |
 | `track-work` | Maintain durable work status and history | `work-tracker` CLI and configured ledger |
 | `serve-html` | Suggest one CLI command; the CLI serves HTML and prints VPN/LAN URLs until Ctrl+C | Chezmoi-managed `~/.config/my-scripts/bin/serve-html.py` from `vimkim/dotfiles`; Linux, Python 3, and `ip` (iproute2) |
 
-These skills retain their invocation names, original content and supporting resources. `markdown-write` includes two executable validators, its regression tests and agent metadata; `track-work` includes agent metadata. The Mermaid validator resolves its bundle from the target document tree or `MERMAID_BUNDLE`, and may install `jsdom` into `~/.cache/markdown-write-skill`. It does not bundle the viewer or dependencies. Install `work-tracker` from its source repository with `just install` when unavailable; the skill uses the executable on `PATH` and its configured ledger.
+The five migrated skills retain their invocation names, original content and supporting resources. `markdown-write` includes two executable validators, its regression tests and agent metadata; `track-work` includes agent metadata. The Mermaid validator resolves its bundle from the target document tree or `MERMAID_BUNDLE`, and may install `jsdom` into `~/.cache/markdown-write-skill`. It does not bundle the viewer or dependencies. Install `work-tracker` from its source repository with `just install` when unavailable; the skill uses the executable on `PATH` and its configured ledger.
 
 `daily-schedule` and `my-cubrid-skills-create` remain in the CUBRID collection. The former invokes this collection's `track-work`; `gh-pr-comments-all` refers to `resolve-greptile-comments` by its unchanged invocation name. See [migration provenance, sequence and verification](docs/migration.md).
+
+After `to-spec` and `to-tickets`, invoke `handoff-implement-spec` with the spec
+reference and ticket references. It saves a temporary Markdown handoff and a
+starter prompt for a new coordinator session; that session uses `implement-spec`
+with explicit clean-context dispatch and the target repository's integration
+rules. The [orchestrator prompt template](skills/handoff-implement-spec/assets/orchestrator-handoff.md)
+contains the contract. Generating the handoff does not start implementation.
 
 ## Install from GitHub
 
