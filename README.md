@@ -15,7 +15,7 @@ This repository is a **source collection**: edit skills here. Installed skills a
 | `track-work` | Maintain durable work status and history | `work-tracker` CLI and configured ledger |
 | `serve-html` | Suggest one CLI command; the CLI serves HTML and prints VPN/LAN URLs until Ctrl+C | Chezmoi-managed `~/.config/my-scripts/bin/serve-html.py` from `vimkim/dotfiles`; Linux, Python 3, and `ip` (iproute2) |
 
-The five migrated skills retain their invocation names, original content and supporting resources. `markdown-write` includes two executable validators, its regression tests and agent metadata; `track-work` includes agent metadata. The Mermaid validator resolves its bundle from the target document tree or `MERMAID_BUNDLE`, and may install `jsdom` into `~/.cache/markdown-write-skill`. It does not bundle the viewer or dependencies. Install `work-tracker` from its source repository with `just install` when unavailable; the skill uses the executable on `PATH` and its configured ledger.
+The five migrated skills retained their invocation names, content and supporting resources at import time; content is maintained here afterward. `markdown-write` includes two executable validators, its regression tests and agent metadata; `track-work` includes agent metadata. The Mermaid validator resolves its bundle from the target document tree or `MERMAID_BUNDLE`, and may install `jsdom` into `~/.cache/markdown-write-skill`. It does not bundle the viewer or dependencies. Install `work-tracker` from its source repository with `just install` when unavailable; the skill uses the executable on `PATH` and its configured ledger.
 
 `daily-schedule` and `my-cubrid-skills-create` remain in the CUBRID collection. The former invokes this collection's `track-work`; `gh-pr-comments-all` refers to `resolve-greptile-comments` by its unchanged invocation name. See [migration provenance, sequence and verification](docs/migration.md).
 
@@ -83,6 +83,11 @@ just remove skill-name
 just test
 python3 tests/real_smoke.py
 ```
+
+`just test` needs the original destination import commit in this checkout's Git
+history. Full clones and their worktrees support it; shallow clones need
+`git fetch --unshallow`, and source archives need a full clone. See the
+[historical provenance verification contract](docs/migration.md#reproducible-verification).
 
 `sync` reconciles current checkout contents. It does **not** fetch or pull Git changes. Refresh your checkout separately. `sync-dry-run` describes additions, updates, unchanged skills, conflicts and stale candidates without modifying the checkout, installed skills, ownership or recovery files. `list` shows globally installed skills for Claude Code and Codex, including other collections; it can populate npm's cache but does not install skills. Discover this checkout separately with `npx --yes skills@1.7.0 add . --list`. `remove` explicitly invokes the installer's global removal for the named skill and both agents, regardless of collection ownership; it is not automatic reconciliation and does not provide recovery. The next sync can recreate a removed current skill. There is no third-party update recipe.
 
