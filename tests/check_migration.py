@@ -86,7 +86,7 @@ class Migration(unittest.TestCase):
         self.run_old()
         for name in NAMES:
             shutil.copytree(self.old / name, self.root / 'skills' / name)
-        target = self.installed('markdown-write') / 'scripts/check_copyparty_markdown.py'
+        target = self.installed('markdown-write') / 'scripts/check_markdown.py'
         target.write_text(target.read_text() + '\n# User edit before transfer\n')
         edited = files(self.installed('markdown-write'))
         self.lock.write_text(json.dumps({'version': 3, 'skills': {
@@ -138,7 +138,7 @@ class Migration(unittest.TestCase):
         self.run_old(dry=True)
         self.assertEqual(before, self.snapshot())
         # Post-transfer edits and third-party ownership are preserved on both interfaces.
-        target = self.installed('markdown-write') / 'scripts/check_copyparty_markdown.py'
+        target = self.installed('markdown-write') / 'scripts/check_markdown.py'
         target.write_text(target.read_text() + '\n# Installed user edit\n')
         lock = {'version': 3, 'skills': {'track-work': {'sourceType': 'github', 'source': 'other/owner'}}}
         self.lock.write_text(json.dumps(lock))

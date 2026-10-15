@@ -8,8 +8,8 @@ from pathlib import Path
 
 
 SKILL_ROOT = Path(__file__).resolve().parents[1]
-CHECKER_PATH = SKILL_ROOT / "scripts" / "check_copyparty_markdown.py"
-SPEC = importlib.util.spec_from_file_location("copyparty_markdown_checker", CHECKER_PATH)
+CHECKER_PATH = SKILL_ROOT / "scripts" / "check_markdown.py"
+SPEC = importlib.util.spec_from_file_location("markdown_checker", CHECKER_PATH)
 assert SPEC and SPEC.loader
 CHECKER = importlib.util.module_from_spec(SPEC)
 sys.modules[SPEC.name] = CHECKER
@@ -50,13 +50,11 @@ $$
 \int_0^1 x\,dx
 $$
 
-\\(
-a^2 + b^2 = c^2
-\\)
+$a^2 + b^2 = c^2$
 
-\\[
+$$
 \nabla \cdot \mathbf{E}
-\\]
+$$
 
 <svg viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg">
   <circle cx="5" cy="5" r="4"/>
@@ -92,7 +90,7 @@ x
                 "Machine-local link",
                 "missing alt text",
                 "does not exist",
-                "Single-backslash TeX delimiter",
+                "Unsupported TeX delimiter",
                 "Mermaid fence is empty",
                 "missing a viewBox",
                 "missing the SVG xmlns",
@@ -131,6 +129,32 @@ not rendered
 ''',
             )
 
+            self.assertEqual(CHECKER.validate_file(markdown), [])
+
+    def test_rejects_parenthesis_and_bracket_math_delimiters(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            for expression in (r"\(x\)", r"\[x\]", r"\\(x\\)", r"\\[x\\]"):
+                with self.subTest(expression=expression):
+                    markdown = self.write(root, "math.md", expression)
+                    messages = [item.message for item in CHECKER.validate_file(markdown)]
+                    self.assertTrue(messages)
+                    self.assertTrue(all("Unsupported TeX delimiter" in item for item in messages))
+
+    def test_accepts_katex_matrix_row_spacing(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            markdown = self.write(
+                root,
+                "matrix.md",
+                r'''$$
+\begin{aligned}
+a &= b \\[4pt]
+c &= d
+\end{aligned}
+$$
+''',
+            )
             self.assertEqual(CHECKER.validate_file(markdown), [])
 
 

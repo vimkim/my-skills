@@ -109,6 +109,10 @@ URL or dirty working-tree line is insufficient revision evidence.
 
 ## 4. Write the guide and question index
 
+If `$asd-ste100` is available, use its STE-flavored mode for English explanations.
+Keep Korean prose natural. Preserve required headings, identifiers, quotations,
+and the strength of evidence claims.
+
 Write natural Korean, keeping terminology understandable to a code-literate
 reviewer new to the subsystem. Use this content order, adapting section depth to
 the PR:
@@ -152,6 +156,7 @@ unique anchor. Check required destination index updates and confirm the source
 checkout and pre-existing local edits were preserved.
 
 Deliver the Markdown path, revision scope, verification actually performed, and
-material limitations. A guide without test execution must say so. Creating the
-file alone does not publish a shareable URL; report an existing viewer URL only
-when its mapping is known, otherwise provide the path and section anchors.
+material limitations. A guide without test execution must say so. For viewing
+instructions, provide only `html-serve` followed by the file's absolute path.
+Shell-quote the path when needed. Leave execution to the user. Retain section
+anchors for direct navigation within the guide.

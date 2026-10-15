@@ -1,18 +1,11 @@
 #!/usr/bin/env node
-// Parse-validate every ```mermaid fence in Markdown files using the SAME
-// vendored mermaid bundle and initialize options as the copyparty viewer
-// (copyparty-render.js), so a block that passes here renders there.
+// Parse-validate every ```mermaid fence with the html-serve viewer's module.
 //
 // Usage:
 //   node check_mermaid_blocks.mjs <file.md> [more.md ...]
 //
-// Why: the viewer renders all diagrams in one mermaid.run() behind a single
-// .catch(), so ONE unparseable diagram blanks EVERY diagram on the page.
-// This script fails at authoring time instead.
-//
-// Bundle resolution: searches upward from each Markdown file's directory for
-//   _copyparty_web/vendor/mermaid/mermaid.min.js
-// Override with the MERMAID_BUNDLE environment variable (path to the bundle).
+// Default module: ~/.config/my-scripts/share/serve-html/vendor/mermaid.js
+// Override with MERMAID_BUNDLE (absolute path to the viewer's ES module).
 // A missing bundle is an error, never a silent pass.
 //
 // Dependency: jsdom (the mermaid bundle needs DOM globals even to parse).
@@ -29,12 +22,14 @@
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import vm from "node:vm";
+import { pathToFileURL } from "node:url";
 import { execFileSync } from "node:child_process";
 import { createRequire } from "node:module";
 
 const CACHE_DIR = path.join(os.homedir(), ".cache", "markdown-write-skill");
-const BUNDLE_RELPATH = path.join("_copyparty_web", "vendor", "mermaid", "mermaid.min.js");
+const DEFAULT_BUNDLE = path.join(
+  os.homedir(), ".config", "my-scripts", "share", "serve-html", "vendor", "mermaid.js"
+);
 
 function fail(message) {
   console.error(message);
@@ -89,23 +84,18 @@ function installDomGlobals(JSDOM) {
   if (!globalThis.navigator) globalThis.navigator = dom.window.navigator;
 }
 
-function findBundleFor(mdFile) {
-  if (process.env.MERMAID_BUNDLE) {
-    const bundle = path.resolve(process.env.MERMAID_BUNDLE);
-    if (!fs.existsSync(bundle)) fail(`MERMAID_BUNDLE points to a missing file: ${bundle}`);
-    return bundle;
+function findBundle() {
+  const bundle = path.resolve(process.env.MERMAID_BUNDLE || DEFAULT_BUNDLE);
+  if (!fs.existsSync(bundle) || !fs.statSync(bundle).isFile()) {
+    fail(
+      `No html-serve Mermaid module found at ${bundle}.\n` +
+        "Set MERMAID_BUNDLE to the viewer's vendor/mermaid.js module."
+    );
   }
-  let dir = path.dirname(path.resolve(mdFile));
-  for (;;) {
-    const candidate = path.join(dir, BUNDLE_RELPATH);
-    if (fs.existsSync(candidate)) return candidate;
-    const parent = path.dirname(dir);
-    if (parent === dir) return null;
-    dir = parent;
-  }
+  return bundle;
 }
 
-// Fence scanning mirrors check_copyparty_markdown.py: an opener is up to three
+// Fence scanning mirrors check_markdown.py: an opener is up to three
 // leading spaces plus three or more backticks or tildes, and only a closing
 // run of the same character at least as long ends the block, so a ```mermaid
 // line inside a longer fence is content, not a new block.
@@ -165,34 +155,14 @@ if (allBlocks.length === 0) {
   process.exit(0);
 }
 
-const bundles = new Set();
-for (const file of files) {
-  const bundle = findBundleFor(file);
-  if (!bundle) {
-    fail(
-      `No mermaid bundle found searching upward from ${path.resolve(file)} for ${BUNDLE_RELPATH}.\n` +
-        "This check must use the viewer's vendored bundle to be authoritative.\n" +
-        "Either run it on files inside the copyparty-served repository, or point\n" +
-        "MERMAID_BUNDLE at the viewer's mermaid.min.js. It never silently passes."
-    );
-  }
-  bundles.add(bundle);
-}
-if (bundles.size > 1) {
-  fail(
-    "The given files resolve to different mermaid bundles; run the check once per repository:\n  " +
-      [...bundles].join("\n  ")
-  );
-}
-const bundlePath = [...bundles][0];
+const bundlePath = findBundle();
 
 const { JSDOM } = loadJsdom();
 installDomGlobals(JSDOM);
-vm.runInThisContext(fs.readFileSync(bundlePath, "utf8"), { filename: bundlePath });
-const mermaid = globalThis.mermaid;
-if (!mermaid) fail(`Bundle did not define a mermaid global: ${bundlePath}`);
+const { default: mermaid } = await import(pathToFileURL(bundlePath).href);
+if (!mermaid?.parse) fail(`Module did not export Mermaid: ${bundlePath}`);
 
-// Same options copyparty-render.js passes; theme is omitted because it does
+// Same parsing options as html-serve; theme is omitted because it does
 // not affect parsing.
 mermaid.initialize({ startOnLoad: false, securityLevel: "strict" });
 

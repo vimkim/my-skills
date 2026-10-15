@@ -37,6 +37,10 @@ close issues, or deploy. Preserve the project's own workflow.
 
 ## Write the handoff
 
+If `$asd-ste100` is available, use its Strict mode for English handoff instructions
+and the starter prompt. Preserve ticket IDs, quoted requirements, scope, and
+authorization. Its absence does not block the handoff.
+
 Use [the orchestrator template](assets/orchestrator-handoff.md). Replace every
 placeholder with a concrete value or an explicit unresolved prerequisite.
 Reference existing artifacts rather than copying their contents. Record the

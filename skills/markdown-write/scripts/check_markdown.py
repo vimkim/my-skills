@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Lint Markdown for the configured copyparty standalone viewer."""
+"""Lint Markdown for the html-serve viewer."""
 
 from __future__ import annotations
 
@@ -14,7 +14,8 @@ from urllib.parse import unquote, urlsplit
 FENCE_RE = re.compile(r"^ {0,3}(`{3,}|~{3,})(?:[ \t]*([A-Za-z0-9_-]+))?.*$")
 LINK_RE = re.compile(r"!?\[[^\]]*\]\(\s*<?([^\s)>]+)>?")
 IMAGE_RE = re.compile(r"!\[([^\]]*)\]\(\s*<?([^\s)>]+)>?")
-SINGLE_TEX_DELIMITER_RE = re.compile(r"(?<!\\)\\([\[\]\(\)])")
+TEX_DELIMITER_RE = re.compile(r"\\+[\[\]\(\)]")
+DOLLAR_MATH_RE = re.compile(r"(?<!\\)(\$\$?)(?!\$).*?(?<!\\)\1(?!\$)", re.DOTALL)
 INLINE_CODE_RE = re.compile(r"(`+)(.*?)(?<!`)\1(?!`)")
 INLINE_SVG_RE = re.compile(r"<svg\b.*?</svg\s*>", re.IGNORECASE | re.DOTALL)
 SVG_OPEN_RE = re.compile(r"<svg\b", re.IGNORECASE)
@@ -186,31 +187,25 @@ def validate_external_svgs(text: str, path: Path) -> list[Diagnostic]:
 
 def validate_tex(text: str, path: Path) -> list[Diagnostic]:
     diagnostics: list[Diagnostic] = []
-    visible_lines: list[str] = []
-    for number, line in enumerate(text.splitlines(), start=1):
-        visible = mask_inline_code(line)
-        visible_lines.append(visible)
-        for match in SINGLE_TEX_DELIMITER_RE.finditer(visible):
+    visible_text = "\n".join(mask_inline_code(line) for line in text.splitlines())
+    # Inside dollar math, \\[4pt] can specify matrix row spacing.
+    outside_math = DOLLAR_MATH_RE.sub(
+        lambda match: re.sub(r"[^\n]", " ", match.group(0)), visible_text
+    )
+    for number, line in enumerate(outside_math.splitlines(), start=1):
+        for match in TEX_DELIMITER_RE.finditer(line):
             delimiter = match.group(0)
             diagnostics.append(
                 Diagnostic(
                     path,
                     number,
-                    f"Single-backslash TeX delimiter {delimiter!r}; double the delimiter backslash for copyparty",
+                    f"Unsupported TeX delimiter {delimiter!r}. Use $...$ or $$...$$ for html-serve",
                 )
             )
-    visible_text = "\n".join(visible_lines)
     unescaped_dollars = len(re.findall(r"(?<!\\)\$", visible_text))
     if unescaped_dollars % 2:
         diagnostics.append(Diagnostic(path, 1, "Unbalanced dollar math delimiters"))
 
-    doubled_delimiters = (
-        (r"(?<!\\)\\\\\(", r"(?<!\\)\\\\\)", "\\\\(...\\\\)"),
-        (r"(?<!\\)\\\\\[", r"(?<!\\)\\\\\]", "\\\\[...\\\\]"),
-    )
-    for opening, closing, label in doubled_delimiters:
-        if len(re.findall(opening, visible_text)) != len(re.findall(closing, visible_text)):
-            diagnostics.append(Diagnostic(path, 1, f"Unbalanced {label} math delimiters"))
     return diagnostics
 
 
@@ -245,7 +240,7 @@ def validate_file(path: Path) -> list[Diagnostic]:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Check Markdown against the configured copyparty rendering contract."
+        description="Check Markdown for the html-serve viewer."
     )
     parser.add_argument("files", nargs="+", type=Path, help="Markdown files to validate")
     return parser.parse_args()

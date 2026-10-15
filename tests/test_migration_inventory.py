@@ -8,6 +8,13 @@ import unittest
 
 REPO = Path(__file__).resolve().parents[1]
 MIGRATION_REVISION = '8a2fe861b7cba354684eb3e3095f1ad83961af24'
+# Current names after the html-serve migration. Historical paths stay unchanged.
+CURRENT_RESOURCE_PATHS = {
+    'skills/markdown-write/scripts/check_copyparty_markdown.py':
+        'skills/markdown-write/scripts/check_markdown.py',
+    'skills/markdown-write/tests/test_check_copyparty_markdown.py':
+        'skills/markdown-write/tests/test_check_markdown.py',
+}
 
 
 class MigrationInventory(unittest.TestCase):
@@ -53,7 +60,8 @@ class MigrationInventory(unittest.TestCase):
                                  f'{name}: executable')
 
     def test_current_files_and_executable_bits(self):
-        expected = self.expected_files()
+        expected = {CURRENT_RESOURCE_PATHS.get(name, name): entry
+                    for name, entry in self.expected_files().items()}
         actual = {p.relative_to(self.repo).as_posix(): p for root in self.skill_roots
                   for p in (self.repo / root).rglob('*') if p.is_file()}
         self.assertEqual(set(actual), set(expected), 'Current resource inventory')
