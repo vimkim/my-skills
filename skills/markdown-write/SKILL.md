@@ -5,8 +5,7 @@ description: Write or revise Markdown documents for html-serve, with Mermaid dia
 
 # Write Markdown for html-serve
 
-Follow the target repository's document and asset conventions. Use `html-serve`
-to view the finished Markdown file.
+Follow the target repository's document and asset conventions.
 
 ## Write the document
 
@@ -90,6 +89,4 @@ location. Fix content errors and repeat validation. Report missing validation
 dependencies without claiming that rendering passed. Validate relative asset
 links and the final diff. Keep validation results separate from viewing instructions.
 
-For viewing instructions, provide only `html-serve` followed by the Markdown
-file's actual absolute path. Shell-quote the path when needed. Leave execution
-to the user.
+Use `$serve-docs` to provide the viewing command.

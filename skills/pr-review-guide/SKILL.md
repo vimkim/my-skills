@@ -156,7 +156,6 @@ unique anchor. Check required destination index updates and confirm the source
 checkout and pre-existing local edits were preserved.
 
 Deliver the Markdown path, revision scope, verification actually performed, and
-material limitations. A guide without test execution must say so. For viewing
-instructions, provide only `html-serve` followed by the file's absolute path.
-Shell-quote the path when needed. Leave execution to the user. Retain section
-anchors for direct navigation within the guide.
+material limitations. A guide without test execution must say so.
+Use `$serve-docs` to provide the viewing command. Retain section anchors for
+direct navigation within the guide.

@@ -20,7 +20,7 @@ import tempfile
 REPO = Path(__file__).resolve().parents[1]
 URL = 'https://github.com/vimkim/my-skills'
 NAMES = {'gh-pr-comments-all', 'resolve-greptile-comments', 'markdown-write',
-         'question-socratically', 'track-work', 'serve-html'}
+         'question-socratically', 'track-work', 'serve-docs'}
 ANSI = re.compile(r'\x1b\[[0-?]*[ -/]*[@-~]')
 
 

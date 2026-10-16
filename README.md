@@ -13,7 +13,7 @@ This repository is a **source collection**: edit skills here. Installed skills a
 | `markdown-write` | Write and validate Markdown for html-serve | Python 3; `html-serve`; Node/npm and `jsdom` for Mermaid checks |
 | `question-socratically` | One-question-at-a-time Socratic dialogue | No external command |
 | `track-work` | Maintain durable work status and history | `work-tracker` CLI and configured ledger |
-| `serve-html` | Print one command to open an HTML or Markdown file | `html-serve` CLI on `PATH` |
+| `serve-docs` | Provide a viewing command after creating human-readable documents | `docserve` CLI on `PATH` |
 
 The five migrated skills retained their invocation names, content and supporting resources at import time; content is maintained here afterward. `markdown-write` includes two executable validators, its regression tests and agent metadata; `track-work` includes agent metadata. The Mermaid validator uses the installed html-serve viewer's module or `MERMAID_BUNDLE`, and may install `jsdom` into `~/.cache/markdown-write-skill`. It does not bundle the viewer or dependencies. The document-writing skills use `asd-ste100` for suitable English text when that skill is available. Install `work-tracker` from its source repository with `just install` when unavailable; the skill uses the executable on `PATH` and its configured ledger.
 
@@ -37,7 +37,7 @@ command outcomes and the protected transition to local sync.
 Installation requires Git and Node **22.20+** with npm/npx. It does not require a
 pre-existing checkout, Python, or just. Individual skills have the runtime
 requirements in the table above; installing their files does not provision
-GitHub authentication, `work-tracker`, or `html-serve`.
+GitHub authentication, `work-tracker`, `html-serve`, or `docserve`.
 
 Discover without installing (either spelling works):
 
