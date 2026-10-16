@@ -1,9 +1,9 @@
 ---
 name: markdown-write
-description: Write or revise Markdown documents for html-serve, with Mermaid diagrams, SVG visuals, and KaTeX equations when useful.
+description: Write or revise Markdown documents for docserve, with Mermaid diagrams, SVG visuals, and KaTeX equations when useful.
 ---
 
-# Write Markdown for html-serve
+# Write Markdown for docserve
 
 Follow the target repository's document and asset conventions.
 
@@ -80,13 +80,22 @@ python -B "$skill_dir/scripts/check_markdown.py" "$output_file"
 For files with Mermaid diagrams, also run:
 
 ```bash
-node "$skill_dir/scripts/check_mermaid_blocks.mjs" "$output_file"
+docserve-check mermaid "$output_file" --render --json
 ```
 
-The Mermaid validator uses the installed html-serve viewer's module. Set
-`MERMAID_BUNDLE` to that module's absolute path if your installation uses another
-location. Fix content errors and repeat validation. Report missing validation
-dependencies without claiming that rendering passed. Validate relative asset
-links and the final diff. Keep validation results separate from viewing instructions.
+The command uses docserve's packaged viewer and checks each diagram in light
+and dark themes with headless Chromium. Fix document errors and repeat the check.
+Exit 1 means a diagram failed; exit 2 means a usage or environment error. Report
+missing dependencies or timeouts as incomplete validation and include the command's
+setup instructions. Checks never install dependencies automatically.
+
+For a syntax-only check, omit `--render`. Report that result as syntax validation.
+A render pass proves viewer completion and visible SVG output; inspect layout
+separately when clipping, overlap, or readability matters. Files with no Mermaid
+blocks are reported explicitly. The command accepts multiple Markdown files.
+See [checker setup and guarantees](https://github.com/vimkim/docserve/blob/main/docs/guide.md#mermaid-checks).
+
+Keep the Markdown source check separate. Validate relative asset links and the
+final diff. Keep validation results separate from viewing instructions.
 
 Use `$serve-docs` to provide the viewing command.

@@ -1,4 +1,4 @@
 interface:
-  display_name: "Write Markdown for html-serve"
+  display_name: "Write Markdown for docserve"
   short_description: "Write Markdown with SVG, Mermaid, and math"
-  default_prompt: "Use $markdown-write to create a Markdown document for html-serve with appropriate diagrams and equations."
+  default_prompt: "Use $markdown-write to create a Markdown document for docserve with appropriate diagrams and equations."
