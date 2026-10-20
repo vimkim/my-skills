@@ -157,5 +157,5 @@ checkout and pre-existing local edits were preserved.
 
 Deliver the Markdown path, revision scope, verification actually performed, and
 material limitations. A guide without test execution must say so.
-Use `$serve-docs` to provide the viewing command. Retain section anchors for
+Use `$serve-docs` to provide the viewing link. Retain section anchors for
 direct navigation within the guide.

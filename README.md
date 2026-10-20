@@ -13,7 +13,7 @@ This repository is a **source collection**: edit skills here. Installed skills a
 | `markdown-write` | Write and validate Markdown for docserve | Python 3; `docserve-check` with optional Playwright/Chromium support for Mermaid checks |
 | `question-socratically` | One-question-at-a-time Socratic dialogue | No external command |
 | `track-work` | Maintain durable work status and history | `work-tracker` CLI and configured ledger |
-| `serve-docs` | Provide a viewing command after creating human-readable documents | `docserve` CLI on `PATH` |
+| `serve-docs` | Provide direct HTTPS links after creating human-readable documents | Access to the persistent docserve server on dev2 |
 
 The five migrated skills retained their invocation names, content and supporting resources at import time; content is maintained here afterward. `markdown-write` includes a source validator, a legacy Mermaid entry point, regression tests and agent metadata; `track-work` includes agent metadata. Mermaid checks use `docserve-check mermaid --render` and docserve's packaged renderer. Install its optional checker support explicitly; see [setup and guarantees](https://github.com/vimkim/docserve/blob/main/docs/guide.md#mermaid-checks). The legacy Node validator remains a compatibility wrapper that forwards to this command. Validation never downloads dependencies. The document-writing skills use `asd-ste100` for suitable English text when that skill is available. Install `work-tracker` from its source repository with `just install` when unavailable; the skill uses the executable on `PATH` and its configured ledger.
 

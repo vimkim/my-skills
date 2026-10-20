@@ -98,4 +98,4 @@ See [checker setup and guarantees](https://github.com/vimkim/docserve/blob/main/
 Keep the Markdown source check separate. Validate relative asset links and the
 final diff. Keep validation results separate from viewing instructions.
 
-Use `$serve-docs` to provide the viewing command.
+Use `$serve-docs` to provide the viewing link.
