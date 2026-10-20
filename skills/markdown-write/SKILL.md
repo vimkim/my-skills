@@ -77,22 +77,21 @@ or changed Markdown file. Run the source validator:
 python -B "$skill_dir/scripts/check_markdown.py" "$output_file"
 ```
 
-For files with Mermaid diagrams, also run:
+For files with Mermaid diagrams, also run syntax validation:
 
 ```bash
-docserve-check mermaid "$output_file" --render --json
+docserve-check mermaid "$output_file" --json
 ```
 
-The command uses docserve's packaged viewer and checks each diagram in light
-and dark themes with headless Chromium. Fix document errors and repeat the check.
-Exit 1 means a diagram failed; exit 2 means a usage or environment error. Report
-missing dependencies or timeouts as incomplete validation and include the command's
-setup instructions. Checks never install dependencies automatically.
+Report this result as syntax validation. Add `--render` only when the user
+explicitly requests rendering verification. A render pass checks viewer completion
+and visible SVG output in light and dark themes. Inspect layout separately when
+clipping, overlap, or readability matters.
 
-For a syntax-only check, omit `--render`. Report that result as syntax validation.
-A render pass proves viewer completion and visible SVG output; inspect layout
-separately when clipping, overlap, or readability matters. Files with no Mermaid
-blocks are reported explicitly. The command accepts multiple Markdown files.
+Both modes require Playwright and headless Chromium. Exit 1 means a diagram failed.
+Exit 2 means a usage or environment error. Fix document errors and repeat the check.
+Report missing dependencies or timeouts as incomplete validation, with the command's
+setup instructions. Install dependencies only when the user explicitly requests setup.
 See [checker setup and guarantees](https://github.com/vimkim/docserve/blob/main/docs/guide.md#mermaid-checks).
 
 Keep the Markdown source check separate. Validate relative asset links and the
