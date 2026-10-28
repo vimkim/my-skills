@@ -107,6 +107,12 @@ repository-relative paths, revision, line numbers, and a short excerpt or
 `git show <sha>:<path>` lookup; clearly mark local-only evidence. A moving branch
 URL or dirty working-tree line is insufficient revision evidence.
 
+Use verified URLs accessible to the intended reviewers for other references and
+images too. Personal viewing services, including the dev2 service used by
+`serve-docs`, belong only in the user's chat handoff. When no suitable shared URL
+exists, include the essential evidence inline and omit the private link. Verify
+replacement destinations; publishing a document requires separate authorization.
+
 ## 4. Write the guide and question index
 
 If `$asd-ste100` is available, use its STE-flavored mode for English explanations.
@@ -157,5 +163,5 @@ checkout and pre-existing local edits were preserved.
 
 Deliver the Markdown path, revision scope, verification actually performed, and
 material limitations. A guide without test execution must say so.
-Use `$serve-docs` to provide the viewing link. Retain section anchors for
-direct navigation within the guide.
+Use `$serve-docs` to provide the personal viewing link in the chat handoff, outside
+the guide's content. Retain section anchors for direct navigation within the guide.
