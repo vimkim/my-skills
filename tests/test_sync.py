@@ -222,12 +222,58 @@ class SyncCommands(unittest.TestCase):
         self.run_sync(code=2)
         self.assertEqual(before, self.snapshot())
 
+    def test_installer_ignored_directories_do_not_break_verification(self):
+        folder = self.skill()
+        for relative in ('__pycache__', 'resources/__pycache__', 'resources/deep/__pycache__'):
+            cache = folder / relative
+            cache.mkdir(parents=True)
+            (cache / 'x.cpython-312.pyc').write_bytes(b'cache')
+        self.run_sync()
+        self.assertFalse((self.installed() / 'resources/__pycache__').exists())
+        self.assertIn('unchanged: alpha', self.run_sync())
+        (folder / 'resources/__pycache__/x.cpython-312.pyc').write_bytes(b'rebuilt')
+        self.assertIn('unchanged: alpha', self.run_sync())
+
+    def test_cache_created_in_installed_copy_is_not_an_edit(self):
+        self.skill()
+        self.run_sync()
+        cache = self.installed() / 'resources/__pycache__'
+        cache.mkdir()
+        (cache / 'run.cpython-312.pyc').write_bytes(b'cache')
+        self.assertIn('unchanged: alpha', self.run_sync())
+        self.skill(body='Changed')
+        self.run_sync()
+        self.assertEqual((self.installed() / 'resources/data.txt').read_text(), 'Changed')
+
+    def test_file_named_like_an_ignored_directory_is_still_verified(self):
+        folder = self.skill()
+        (folder / '__pycache__').write_text('regular file')
+        self.run_sync()
+        self.assertEqual((self.installed() / '__pycache__').read_text(), 'regular file')
+        (self.installed() / '__pycache__').write_text('edited')
+        self.assertIn('installed files were edited', self.run_sync(code=2))
+
+    def test_source_content_the_installer_drops_fails_verification_instead_of_vanishing(self):
+        for dropped in ('metadata.json', '__pypackages__/pkg.py', '.git/HEAD'):
+            with self.subTest(dropped=dropped):
+                folder = self.skill()
+                (folder / dropped).parent.mkdir(parents=True, exist_ok=True)
+                (folder / dropped).write_text('content')
+                self.assertIn('installer verification failed for alpha', self.run_sync(code=1))
+                top = folder / Path(dropped).parts[0]
+                shutil.rmtree(top) if top.is_dir() else top.unlink()
+
     def test_source_symlink_rejected(self):
         folder = self.skill()
         (folder / 'escape').symlink_to('/etc/passwd')
         before = self.snapshot()
         self.run_sync(code=1)
         self.assertEqual(before, self.snapshot())
+
+    def test_symlink_named_like_an_ignored_directory_is_rejected(self):
+        folder = self.skill()
+        (folder / '__pycache__').symlink_to('resources')
+        self.run_sync(code=1)
 
 
 if __name__ == '__main__':

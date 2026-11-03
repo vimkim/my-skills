@@ -5,6 +5,19 @@ from pathlib import Path
 import shutil
 import sys
 
+EXCLUDED_DIRS = {'.git', '__pycache__', '__pypackages__'}
+EXCLUDED_ANY = {'metadata.json'}
+
+
+def _real_dir(path):
+    return path.is_dir() and not path.is_symlink()
+
+
+def skip_like_skills_1_7_0(directory, names):
+    return [name for name in names
+            if name in EXCLUDED_ANY or name in EXCLUDED_DIRS and _real_dir(Path(directory) / name)]
+
+
 argv = sys.argv[1:]
 root = Path(argv[argv.index('add') + 1])
 names = argv[argv.index('--skill') + 1:argv.index('--yes')]
@@ -15,7 +28,7 @@ for name in names:
         source = root / name
     destination = home / '.agents/skills' / name
     destination.parent.mkdir(parents=True, exist_ok=True)
-    shutil.copytree(source, destination)
+    shutil.copytree(source, destination, ignore=skip_like_skills_1_7_0)
     link = home / '.claude/skills' / name
     link.parent.mkdir(parents=True, exist_ok=True)
     link.symlink_to(os.path.relpath(destination, link.parent))
