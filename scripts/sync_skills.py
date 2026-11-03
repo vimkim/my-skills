@@ -46,12 +46,20 @@ def config_for(root, path=None):
     return cfg
 
 
+# Regenerable caches the pinned skills@1.7.0 installer does not copy, at any depth.
+# Its other skipped names (.git, __pypackages__, metadata.json) stay hashed so a
+# dropped source file fails verification instead of vanishing.
+INSTALLER_IGNORED_DIRS = frozenset({'__pycache__'})
+
+
 def digest_tree(root):
     """Hash names, executable bits and bytes; reject ambiguous/special resources."""
     if root.is_symlink() or not root.is_dir():
         raise SyncError(f"not a regular skill directory: {root}")
     digest = hashlib.sha256()
     for directory, dirs, files in os.walk(root, onerror=lambda exc: (_ for _ in ()).throw(exc)):
+        dirs[:] = [name for name in dirs
+                   if name not in INSTALLER_IGNORED_DIRS or (Path(directory) / name).is_symlink()]
         for name in sorted(dirs + files):
             p = Path(directory) / name
             if p.is_symlink() or not (p.is_file() or p.is_dir()):
