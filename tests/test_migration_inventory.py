@@ -15,6 +15,16 @@ CURRENT_RESOURCE_PATHS = {
     'skills/markdown-write/tests/test_check_copyparty_markdown.py':
         'skills/markdown-write/tests/test_check_markdown.py',
 }
+# Skill directories disabled after the migration keep their files under a new root.
+CURRENT_SKILL_ROOTS = {
+    'skills/question-socratically': 'disabled-skills/question-socratically',
+}
+
+
+def current_path(name):
+    name = CURRENT_RESOURCE_PATHS.get(name, name)
+    root = '/'.join(name.split('/')[:2])
+    return CURRENT_SKILL_ROOTS.get(root, root) + name[len(root):]
 
 
 class MigrationInventory(unittest.TestCase):
@@ -60,10 +70,10 @@ class MigrationInventory(unittest.TestCase):
                                  f'{name}: executable')
 
     def test_current_files_and_executable_bits(self):
-        expected = {CURRENT_RESOURCE_PATHS.get(name, name): entry
+        expected = {current_path(name): entry
                     for name, entry in self.expected_files().items()}
         actual = {p.relative_to(self.repo).as_posix(): p for root in self.skill_roots
-                  for p in (self.repo / root).rglob('*') if p.is_file()}
+                  for p in (self.repo / current_path(root)).rglob('*') if p.is_file()}
         self.assertEqual(set(actual), set(expected), 'Current resource inventory')
         for name, entry in expected.items():
             with self.subTest(resource=name):
