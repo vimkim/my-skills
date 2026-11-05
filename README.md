@@ -14,7 +14,7 @@ This repository is a **source collection**: edit skills here. Installed skills a
 | `track-work` | Maintain durable work status and history | `work-tracker` CLI and configured ledger |
 | `serve-docs` | Provide direct HTTPS links after creating human-readable documents | Access to the persistent docserve server on dev2 |
 | `decide` | List the decisions only the user can make before work continues | None; invoked by the user only |
-| `musk` | Alias of `decide` | The installed `decide` skill |
+| `musk` | Alias of `decide`; `tests/test_skill_aliases.py` keeps both bodies identical | None; invoked by the user only |
 
 `question-socratically` is disabled. Its source stays in `disabled-skills/question-socratically/`, which `just sync` does not install.
 
