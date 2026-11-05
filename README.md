@@ -13,6 +13,7 @@ This repository is a **source collection**: edit skills here. Installed skills a
 | `markdown-write` | Write and validate Markdown for docserve | Python 3; `docserve-check` with optional Playwright/Chromium support for Mermaid checks |
 | `track-work` | Maintain durable work status and history | `work-tracker` CLI and configured ledger |
 | `serve-docs` | Provide direct HTTPS links after creating human-readable documents | Access to the persistent docserve server on dev2 |
+| `decide` | List the decisions only the user can make before work continues | None; invoked by the user only |
 
 `question-socratically` is disabled. Its source stays in `disabled-skills/question-socratically/`, which `just sync` does not install.
 
