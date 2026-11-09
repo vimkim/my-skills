@@ -9,14 +9,13 @@ Keep one durable Work Item current while work crosses agent turns, long waits, o
 
 ## 1. Preflight the tracker
 
-1. Require the `work-tracker` executable:
+1. Check the tracker:
 
    ```bash
-   command -v work-tracker
-   work-tracker path
+   work-tracker doctor --json
    ```
 
-2. If it is missing, stop and tell the user to install it from the work-tracker repository with `just install`.
+2. If the command is missing, stop and tell the user to install it from the work-tracker repository with `just install`. If `doctor` exits nonzero, report the failed required checks and stop. Warnings do not block tracking.
 3. Use the configured database. Respect `WORK_TRACKER_DB` or the default printed by `work-tracker path`; never invent a second database for convenience.
 4. Set a stable actor for this agent session, preferably through `WORK_TRACKER_ACTOR`. If the runtime exposes a stable agent or session identifier, use it. Do not put credentials or secrets in the actor or notes.
 
@@ -39,10 +38,16 @@ work-tracker show <ID> --json
 work-tracker history <ID> --json
 ```
 
-Otherwise, check the Daily View before creating an item. It lists every Actionable Work Item plus anything finished today, so an objective completed earlier today is recognised as already done:
+Otherwise, check the Daily View before creating an item. It lists every Actionable Work Item plus anything finished today, so an objective completed earlier today is recognised as already done. `--compact` omits descriptions, which keeps the output small:
 
 ```bash
-work-tracker today --json
+work-tracker today --compact --json
+```
+
+If the objective may have been tracked on an earlier day, also search titles, descriptions, and notes:
+
+```bash
+work-tracker search <distinctive terms> --json
 ```
 
 Create one concise Work Item when no existing item represents the same objective:
@@ -56,7 +61,7 @@ work-tracker add "<objective>" \
   --json
 ```
 
-Capture the returned `id` and reuse it throughout the workflow. If creation output is lost, inspect `today --json`; do not create a second item blindly. Tell the user the ID when registration is automatic so the durable record is visible.
+Capture the returned `id` and reuse it throughout the workflow. If creation output is lost, inspect `today --compact --json`; do not create a second item blindly. Tell the user the ID when registration is automatic so the durable record is visible.
 
 ## 3. Keep status and context current
 
@@ -97,12 +102,14 @@ Reconstruct context from the ledger instead of memory:
 
 ```bash
 work-tracker show <ID> --json
-work-tracker history <ID> --json
+work-tracker history <ID> --limit 20 --json
 ```
+
+`--limit 20` returns the newest 20 History Entries. Read the full history only when those entries do not explain the current state.
 
 Before continuing, identify the current Status, latest meaningful note, unresolved dependency, and next action. If the stored objective conflicts with the user's current request, ask which one governs before mutating the item.
 
-Use `work-tracker today --json` when no ID is available. Section 6 says when `list` is the better view.
+When no ID is available, run `work-tracker brief` in the Work Directory. It lists that directory's Actionable Work Items with each latest note. A configured SessionStart hook may already have injected the same brief. Section 6 lists the wider views.
 
 ## 5. Finish explicitly
 
@@ -120,8 +127,10 @@ Pick the view by the question being answered:
 
 | Question | Command |
 |---|---|
-| Is this objective already registered, or was it finished today? | `work-tracker today --json` |
-| What is still open or unfinished? | `work-tracker list --json` |
+| Is this objective already registered, or was it finished today? | `work-tracker today --compact --json` |
+| What is still open or unfinished? | `work-tracker list --compact --json` |
+| Was this tracked before, under any status? | `work-tracker search <terms> --json` |
+| What is open in this Work Directory? | `work-tracker brief` or `work-tracker list --here --compact --json` |
 | Which items have one exact status? | `work-tracker list --status <status> --json` |
 | What was done before, or which ID belongs to a finished item? | `work-tracker list --all --json`, or `show <ID>` when the ID is known |
 
