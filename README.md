@@ -8,6 +8,7 @@ This repository is a **source collection**: edit skills here. Installed skills a
 |---|---|---|
 | `gh-pr-comments-all` | Fetch all three GitHub PR comment streams | Authenticated `gh`, `jq`, Bash and standard shell tools |
 | `handoff-implement-spec` | Prepare a handoff for one fresh implementation agent per ticket | Matt Pocock's `implement-spec`, `tdd`, and `code-review`, plus `track-work` and a receiving harness with independent agent contexts and worktrees |
+| `just-daemonize` | Make project service installation and operation reproducible through just | `just`, the project's runtime dependencies, and one process manager suited to the target host |
 | `pr-review-guide` | Write Korean PR reviewer guides with revision evidence and linked answers | Git; hosting access for PR metadata when available; accepts a separate documentation destination such as `my-cubrid-docs` |
 | `resolve-greptile-comments` | Resolve replied Greptile review threads | Authenticated `gh` with repository permissions, Bash and standard shell tools |
 | `markdown-write` | Write and validate Markdown for docserve | Python 3; `docserve-check` with optional Playwright/Chromium support for Mermaid checks |
