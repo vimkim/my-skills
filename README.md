@@ -16,6 +16,7 @@ This repository is a **source collection**: edit skills here. Installed skills a
 | `serve-docs` | Provide direct HTTPS links after creating human-readable documents | Access to the persistent docserve server on dev2 |
 | `decide` | List the decisions only the user can make before work continues | None; invoked by the user only |
 | `musk` | Alias of `decide`; `tests/test_skill_aliases.py` keeps both bodies identical | None; invoked by the user only |
+| `vimkim-mode` | Apply personal conventions, resumable handoffs, and CUBRID TC merge reporting | The owner's global guidance and CUBRID policy files; invoked by the user only |
 
 `question-socratically` is disabled. Its source stays in `disabled-skills/question-socratically/`, which `just sync` does not install.
 
@@ -63,6 +64,16 @@ The CLI writes the canonical Codex-compatible copies under `~/.agents/skills`
 and Claude Code links under `~/.claude/skills`. Full URL and shorthand refer to
 the same repository. See the [upstream CLI documentation](https://github.com/vercel-labs/skills#install-a-skill)
 for source formats and agent selection.
+
+After `vimkim-mode` reaches `main`, install only that skill at user level for both agents:
+
+```sh
+npx --yes skills@1.7.0 add vimkim/my-skills --global --skill vimkim-mode --agent claude-code codex --yes
+```
+
+Invoke it with `$vimkim-mode` in Codex or `/vimkim-mode` in Claude Code. It applies
+when explicitly invoked. On the maintainer's host, edit `skills/vimkim-mode/`
+and run `just sync` to update both installed copies.
 
 Remote installation downloads published content. Local `just sync` reconciles a
 source checkout with the safety and ownership rules below; it does not fetch
