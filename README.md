@@ -17,6 +17,7 @@ This repository is a **source collection**: edit skills here. Installed skills a
 | `decide` | List the decisions only the user can make before work continues | None; invoked by the user only |
 | `musk` | Alias of `decide`; `tests/test_skill_aliases.py` keeps both bodies identical | None; invoked by the user only |
 | `vimkim-mode` | Apply personal conventions, resumable handoffs, and CUBRID TC merge reporting | The owner's global guidance and CUBRID policy files; invoked by the user only |
+| `close-gate` | Fail-closed audit of unpersisted loose ends and live workspace state before closing a session | None; read-only git/tracker checks run when present |
 
 `question-socratically` is disabled. Its source stays in `disabled-skills/question-socratically/`, which `just sync` does not install.
 
