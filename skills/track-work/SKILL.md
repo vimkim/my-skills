@@ -50,7 +50,7 @@ If the objective may have been tracked on an earlier day, also search titles, de
 work-tracker search <distinctive terms> --json
 ```
 
-Create one concise Work Item when no existing item represents the same objective:
+Create one concise Work Item when no existing item represents the same objective. When it depends on existing Work Items, pass `--blocked-by <ID[,ID...]>` (any unresolved blocker starts the item as `blocked`):
 
 ```bash
 work-tracker add "<objective>" \
@@ -96,6 +96,20 @@ Update durable scope text only when the objective itself changes:
 work-tracker update <ID> --description "<revised scope and success condition>" --actor "<actor>" --note "scope clarified" --json
 ```
 
+### Dependencies and automatic unblock
+
+Link blocking Work Items explicitly instead of only mentioning them in notes:
+
+```bash
+work-tracker dep add <ID> --blocked-by <BLOCKER_ID[,...]> --actor "<actor>" --note "<reason>" --json
+work-tracker dep remove <ID> --blocked-by <BLOCKER_ID[,...]> --actor "<actor>" --note "<reason>" --json
+work-tracker dep list <ID> --json
+```
+
+- Self-dependencies and cycles are rejected. Adding an unresolved blocker (`status != done`) automatically moves an actionable item to `blocked`.
+- Only `done` satisfies a blocker: when the last unresolved blocker becomes `done` (or is removed with `dep remove`), downstream `blocked` items automatically transition to `pending` with a structured `unblocked` History Entry.
+- `cancelled` and `deleted` blockers do not auto-unblock downstream work; inspect and resolve explicitly via `dep remove` or by cancelling the downstream item.
+
 ## 4. Resume safely
 
 Reconstruct context from the ledger instead of memory:
@@ -103,13 +117,14 @@ Reconstruct context from the ledger instead of memory:
 ```bash
 work-tracker show <ID> --json
 work-tracker history <ID> --limit 20 --json
+work-tracker dep list <ID> --json
 ```
 
 `--limit 20` returns the newest 20 History Entries. Read the full history only when those entries do not explain the current state.
 
 Before continuing, identify the current Status, latest meaningful note, unresolved dependency, and next action. If the stored objective conflicts with the user's current request, ask which one governs before mutating the item.
 
-When no ID is available, run `work-tracker brief` in the Work Directory. It lists that directory's Actionable Work Items with each latest note. A configured SessionStart hook may already have injected the same brief. Section 6 lists the wider views.
+When no ID is available, run `work-tracker brief` in the Work Directory. It lists that directory's Actionable Work Items with each unresolved blocker and latest note (including automatic unblock notes). A configured SessionStart hook may already have injected the same brief. Section 6 lists the wider views.
 
 ## 5. Finish explicitly
 
@@ -128,6 +143,7 @@ Pick the view by the question being answered:
 | Question | Command |
 |---|---|
 | Is this objective already registered, or was it finished today? | `work-tracker today --compact --json` |
+| What is ready to work on right now (not blocked or waiting)? | `work-tracker list --ready --compact --json` (add `--here` for this Work Directory) |
 | What is still open or unfinished? | `work-tracker list --compact --json` |
 | Was this tracked before, under any status? | `work-tracker search <terms> --json` |
 | What is open in this Work Directory? | `work-tracker brief` or `work-tracker list --here --compact --json` |
