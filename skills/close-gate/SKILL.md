@@ -21,7 +21,7 @@ Clear to `CLOSE` only after checking every applicable dimension below with direc
    - Bugs, regressions, risks, or tech debt discovered during the session and neither fixed nor filed.
    - External follow-ups promised or needed (such as JIRA/GitHub issues, PR comments, reviews, or handoffs) not yet filed or posted.
    - Decisions only the user can make (fix now vs. file later, merge/ship/discard, scope or ownership choices).
-   - Deferred tasks, skipped checks, or unresolved failures with no durable home.
+   - Deferred tasks, skipped checks, or unresolved workflow, skill, or tool failures with no durable home (recommend `failure-tracker record` via `record-failure` for recurring workflow or skill defects).
 2. **Live workspace and runtime checks** (verify with read-only commands; skip tools or repos absent from this session and note why)
    - **Git**: uncommitted edits, untracked deliverables, stashes, unpushed commits, unmerged topic branches, or leftover worktrees (`git status`, `git stash list`, ahead/behind status, `git worktree list`).
    - **Work tracker**: if a tracker such as `work-tracker` applies to this session, check whether item status (`active`/`waiting`/`done`) and resume notes match current state.
