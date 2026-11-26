@@ -21,6 +21,7 @@ This repository is a **source collection**: edit skills here. Installed skills a
 | `close-gate` | Fail-closed audit of unpersisted loose ends and live workspace state before closing a session | None; read-only git/tracker checks run when present |
 | `record-failure` | Record recurring workflow, skill, hook, or tool failures for structural follow-up | `failure-tracker` CLI and configured SQLite ledger |
 | `improve-failures` | Triage open `failure-tracker` patterns and dispatch parallel root-cause fixes across repos | `failure-tracker` CLI, Git worktrees, and target repo verification commands |
+| `slidev-unslop` | Build or reshape editorial, zero-AI-slop Slidev decks with visual verification and PDF export | Node.js 22+, Slidev (`@slidev/cli`), Playwright/Chromium and `pdf-lib` for verification/PDF export, optional `just` |
 
 `question-socratically` is disabled. Its source stays in `disabled-skills/question-socratically/`, which `just sync` does not install.
 

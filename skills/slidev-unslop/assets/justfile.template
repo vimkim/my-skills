@@ -1,0 +1,54 @@
+set shell := ["bash", "-euo", "pipefail", "-c"]
+
+host := env_var_or_default("HOST", "0.0.0.0")
+port := env_var_or_default("PORT", "3030")
+preview_port := env_var_or_default("PREVIEW_PORT", "4188")
+
+[private]
+default:
+    @if [ -t 1 ]; then just --choose; else just --list; fi
+
+# Start Slidev dev server reachable on localhost and LAN
+[group('serve')]
+dev:
+    @echo "Slidev Dev Server: http://localhost:{{port}}/ (presenter: http://localhost:{{port}}/presenter/)"
+    ./node_modules/.bin/slidev --remote --bind {{host}} --port {{port}}
+
+# Preview built static SPA (dist/) with history fallback
+[group('serve')]
+preview:
+    @if [ ! -d dist ]; then npm run build; fi
+    HOST={{host}} PORT={{preview_port}} node scripts/serve_dist.mjs
+
+# Build static Slidev SPA into dist/
+[group('build')]
+build:
+    npm run build
+
+# Export built deck to PDF via headless Chromium and pdf-lib
+[group('build')]
+export-pdf:
+    @if [ ! -d dist ]; then npm run build; fi
+    node scripts/export_pdf.mjs
+
+# Build and verify every slide at 1280x720 with headless Chromium
+[group('verify')]
+verify:
+    npm run build
+    node scripts/verify_slides.mjs
+
+# List media files present under public/media/
+[group('verify')]
+media-status:
+    @mkdir -p public/media
+    @ls -lh public/media/
+
+# Remove build, verification, and Slidev cache outputs
+[group('clean')]
+clean:
+    rm -rf dist .verify .slidev
+
+# Remove only Playwright verification screenshots
+[group('clean')]
+clean-verify:
+    rm -rf .verify
