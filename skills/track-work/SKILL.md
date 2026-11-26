@@ -69,11 +69,13 @@ Use exactly one current Status:
 
 - `pending`: accepted but not started.
 - `active`: an agent or human is currently progressing it.
-- `waiting`: progress depends on an expected external event, such as queued CI or a timed agent loop.
-- `blocked`: progress cannot continue without a decision, permission, missing input, or failed dependency.
+- `waiting`: progress depends on an expected external event or reply, such as queued CI, PR review, a timed agent loop, or a user response.
+- `blocked`: progress cannot continue due to a technical, permission, missing-input, decision, or failed-dependency impediment.
 - `done`: the objective and its required verification are complete.
 - `cancelled`: work was intentionally abandoned without completion.
 - `deleted`: explicit cleanup only; never use it to mean done.
+
+Keep at most five items `active`. Demote items untouched for more than three days to `pending`, or to `waiting` or `blocked` when their current state warrants it.
 
 Apply status changes with a concrete reason:
 
@@ -151,6 +153,8 @@ Pick the view by the question being answered:
 | What was done before, or which ID belongs to a finished item? | `work-tracker list --all --json`, or `show <ID>` when the ID is known |
 
 `list` shows only Actionable Work Items by default: pending, active, waiting, blocked. `--all` adds done and cancelled. Both `list` and `today` put the most urgent rows first: blocked, active, waiting, pending, then finished work.
+
+Prefer `work-tracker list --here` (or `work-tracker list --ready --here`) when scoped to the current project or session; use unscoped `work-tracker list` only for cross-project or "what to do next today" queries.
 
 Use human-readable output when reporting interactively:
 
