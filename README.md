@@ -15,7 +15,7 @@ This repository is a **source collection**: edit skills here. Installed skills a
 | `markdown-write` | Write and validate Markdown for docserve | Python 3; `docserve-check` with optional Playwright/Chromium support for Mermaid checks |
 | `track-work` | Maintain durable work status and history | `work-tracker` CLI and configured ledger |
 | `serve-docs` | Provide direct HTTPS links after creating human-readable documents | Access to the persistent docserve server on dev2 |
-| `decide` | List the decisions only the user can make before work continues | None; invoked by the user only |
+| `decide` | List the decisions only the user can make before work continues, or run `close-gate` when nothing remains | None (`close-gate` when nothing remains); invoked by the user only |
 | `musk` | Alias of `decide`; `tests/test_skill_aliases.py` keeps both bodies identical | None; invoked by the user only |
 | `vimkim-mode` | Apply personal conventions, resumable handoffs, and CUBRID TC merge reporting | The owner's global guidance and CUBRID policy files; invoked by the user only |
 | `close-gate` | Fail-closed audit of unpersisted loose ends and live workspace state before closing a session | None; read-only git/tracker checks run when present |

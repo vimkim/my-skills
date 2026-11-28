@@ -1,6 +1,6 @@
 ---
 name: decide
-description: List the decisions only the user can make before work continues.
+description: List the decisions only the user can make before work continues, or run close-gate when nothing remains.
 disable-model-invocation: true
 ---
 
@@ -12,4 +12,5 @@ Write the report in Korean, including headings, recommendations, defaults, and n
 
 - Check facts yourself first and cite the evidence instead of asking.
 - Decide reversible details yourself and list them as defaults.
-- If nothing needs a decision, say so and name the next step.
+- If nothing needs a decision and execution work remains, say so and name the next step.
+- If nothing needs a decision and no execution step remains, invoke and follow the `close-gate` skill in the same turn and report its verdict.
